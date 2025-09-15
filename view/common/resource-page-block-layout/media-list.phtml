@@ -1,0 +1,19 @@
+<!-- template begin: common/resource-page-block-layout/media-list -->
+<?php
+$resourceMedia = $resource->media();
+?>
+<?php if ($resourceMedia): ?>
+<dl class="media-list cm-flk-block">
+    <div class="property">
+        <dt>
+          <?php echo $this->translate('Media'); ?>
+        </dt>
+        <?php foreach ($resourceMedia as $media): ?>
+        <dd class="value cm-flk-cell" data-source="<?php echo $media->source(); ?>" data-extension="<?php echo $media->extension(); ?>" data-mediaType="<?php echo $media->mediaType(); ?>">
+          <?php echo $this->LinkPretty($resource, $media, 'large', false); ?>
+        </dd>
+        <?php endforeach; ?>
+    </div>
+</dl>
+<?php endif; ?>
+<!-- template end: common/resource-page-block-layout/media-list -->

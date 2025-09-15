@@ -1,0 +1,47 @@
+<!-- template begin: common/block-layout/browse-cards -->
+<?php
+$escape = $this->plugin('escapeHtml');
+
+$title = isset($title) ? $title : null;
+$description = isset($description) ? $description : null;
+$totalResults = (isset($totalResults) && $totalResults) ? $totalResults : count($resources);
+$page = isset($query['page']) ? $query['page'] : 1;
+$perPage = isset($query['per_page']) ? $query['per_page'] : $totalResults;
+$limit = isset($query['limit']) ? $query['limit'] : 12;
+$more = (($page * $perPage) >= $limit);
+$offsetStart = ($page - 1) * $perPage + 1;
+$offsetEnd = $page * $perPage;
+$offsetEnd = ($offsetEnd > $totalResults) ? $totalResults : $offsetEnd;
+?>
+
+<div class="preview-block bulma-section px-0 cm-is-gris-doux">
+  <div class="bulma-container">
+    <ul class="resource-list preview cm-iso-block">
+      <?php if ($title || $description): ?>
+      <li class="resource cm-iso-cell cm-iso-wide bulma-card">
+        <div class="cm-item-img bulma-card-image">
+        </div>
+        <div class="bulma-card-content">
+          <div class="cm-item-title bulma-title is-size-6">
+          </div>
+          <div class="bulma-content">
+            <?php if ($title): ?><h2 class="has-text-centered is-size-2"><?php echo $escape($title); ?></h2><?php endif; ?>
+            <?php if ($description): ?><p class="has-text-centered"><?php echo $escape($description); ?></p><?php endif; ?>
+            <p class="has-text-centered"><?php echo sprintf('%s - %s / %s [%s]', $offsetStart, $offsetEnd, $totalResults, $limit); ?></p>
+            <p class="has-text-centered"><?php echo sprintf('page %s - perPage %s', $page, $perPage); ?></p>
+          </div>
+        </div>
+      </li>
+      <?php endif; ?>
+      <?php foreach ($resources as $resource): ?>
+      <li class="resource <?php echo $resource->resourceName(); ?> cm-iso-cell bulma-card">
+        <?php echo $this->LinkPretty($resource, null, 'large', true, true); ?>
+      </li>
+      <?php endforeach; ?>
+    </ul>
+    <div class="browse-controls">
+      <?php echo $this->pagination(); ?>
+    </div>
+  </div>
+</div>
+<!-- template end: common/block-layout/browse-cards -->

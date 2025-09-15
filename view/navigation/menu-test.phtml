@@ -1,0 +1,7 @@
+<div class="zzz">
+  <?php
+  foreach($container as $page) {
+    echo "<div>$page->id / $page->label / $page->class / $page->title / $page->target / $page->order / $page->active / $page->visible / " . count($page->pages) . "</div>";
+  }
+  ?>
+</div>

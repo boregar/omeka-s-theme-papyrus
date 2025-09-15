@@ -1,0 +1,19 @@
+<!-- template begin: common/resource-page-block-layout/linked-resources -->
+<?php
+$options = [
+    'page' => $this->params()->fromQuery('page', 1),
+    'perPage' => 25,
+    'resourceProperty' => $this->params()->fromQuery('resource_property'),
+];
+if ($this->siteSetting('exclude_resources_not_in_site')) {
+    $options['siteId'] = $this->currentSite()->id();
+}
+$subjectValues = $resource->displaySubjectValues($options);
+?>
+<div id="resources-linked" class="resources-linked">
+    <div class="resources-linked__header bulma-container has-text-centered">
+        <h3 class="resources-linked__heading mb-4 cm-is-spaced"><?php echo $this->translate('Linked resources'); ?></h3>
+    </div>
+    <?php echo $subjectValues ?: "<div class=\"has-text-centered\">Aucune ressource n'est liée à cet élément.</div>"; ?>
+</div>
+<!-- template end: common/resource-page-block-layout/linked-resources -->

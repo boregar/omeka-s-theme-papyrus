@@ -1,0 +1,29 @@
+<!-- template begin: common/block-layout/slider-home -->
+<?php
+$block_id = $expression['block_id'];
+// les paramètres du bloc sont utilisés pour sélectionner une liste d'items
+$search = $expression['block_search'];
+$response = $this->api()->search('items', $search);
+$items = $response->getContent();
+?>
+
+<ul class="resource-list slider-home cm-flk-block" data-freescroll="false" data-autoplay="5000" data-wraparound="true" data-fade="true" data-prevnextbuttons="false" data-draggable="false">
+<?php foreach ($items as $item): ?>
+  <li class="linked-resource cm-flk-cell" data-itemid="<?php echo $item->id(); ?>" data-ressourceclass="<?php echo $item->resourceClass() ? $item->resourceClass()->label() : 'Resource'; ?>">
+    <div class="cm-item-media cm-is-rounded">
+      <?php
+      echo $this->LinkPretty($item, null, 'large');
+      ?>
+    </div>
+    <div class="cm-item-content px-6">
+      <div class="bulma-container">
+        <h2 class="bulma-title has-text-centered is-size-2 mb-5"><?php echo $item->displayTitle() ?></h2>
+      </div>
+      <div class="bulma-container has-text-centered">
+        <p class="has-text-centered is-size-5"><?php echo $item->value('dcterms:description'); ?></p>
+      </div>
+    </div>
+  </li>
+<?php endforeach; ?>
+</ul>
+<!-- template end: common/block-layout/slider-home -->

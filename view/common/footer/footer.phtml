@@ -1,0 +1,57 @@
+<!-- template begin: common/footer/footer -->
+
+<?php
+$nav = $site->publicNav();
+$container = $nav->getContainer();
+//$page = $container->findOneBy('o:slug', 'et-quoniam-apud');
+?>
+
+<div class="bulma-section cm-footer-top cm-is-gris-dark">
+  <div class="bulma-container">
+    <h2 class="has-text-centered is-size-2">Notre univers</h2>
+  </div>
+</div>
+
+<div class="bulma-section cm-footer-center cm-is-gris-doux pt-0">
+  <div class="bulma-container">
+    <div class="bulma-columns has-text-centered">
+      <div class="bulma-column">
+        <h4 class="cm-is-spaced mt-6 mb-3">Nous suivre</h4>
+        <ul class="cm-socials">
+          <li><i class="fab fa-youtube"></i></li>
+          <li><i class="fab fa-facebook-f"></i></li>
+          <li><i class="fab fa-instagram"></i></li>
+          <li><i class="fab fa-linkedin-in"></i></li>
+          <li><i class="fab fa-vimeo-v"></i></li>
+        </ul>
+        <h4 class="cm-is-spaced mt-6 mb-3">Nous lire</h4>
+        <?php echo $this->partial('common/forms/newsletter'); ?>
+      </div>
+      <div class="bulma-column">
+        <h4 class="cm-is-spaced mt-6 mb-3">Explorer</h4>
+        <?php echo $this->partial('common/footer/footer-menu'); ?>
+        <h4 class="cm-is-spaced mt-6 mb-3">Bonus</h4>
+        <ul>
+          <li><a href="/notice">Mentions légales</a></li>
+          <li><a href="/notice#merci">Remerciements</a></li>
+        </ul>
+      </div>
+      <div class="bulma-column">
+        <h4 class="cm-is-spaced mt-6 mb-3">Nous trouver</h4>
+        <p>Rue Jean-Jacques Rousseau<br/>2112 Val-de-Travers</p>
+        <p><i class="fas fa-at"></i> info@museerousseau.ch</p>
+        <p><i class="fas fa-phone"></i> +41 32 860 11 94</p>
+        <h4 class="cm-is-spaced mt-6 mb-3">Réalisation</h4>
+        <p><a href="https://boregar.org"><img id="boregar-icon" src="<?php echo $this->assetUrl('img/boregar-icon.png'); ?>" alt="logo boregar"> boregar</a></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="bulma-section cm-footer-bottom cm-is-gris-medium p-2">
+  <div class="bulma-container">
+    <div class="has-text-centered">&copy; 2025 Musée Rousseau Môtiers</div>
+  </div>
+</div>
+
+<!-- template end: common/footer/footer -->

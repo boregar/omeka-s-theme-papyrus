@@ -1,0 +1,38 @@
+<!-- template begin: omeka/site/item-set/browse -->
+<?php
+$translate = $this->plugin('translate');
+$escape = $this->plugin('escapeHtml');
+$thumbnail = $this->plugin('thumbnail');
+
+$filterLocale = (bool) $this->siteSetting('filter_locale_values');
+$lang = $this->lang();
+$valueLang = $filterLocale ? [$lang, ''] : null;
+$query = $this->params()->fromQuery();
+
+$this->htmlElement('body')->appendAttribute('class', 'item-set resource browse');
+?>
+
+<div class="bulma-hero bulma-is-medium">
+  <div class="bulma-hero-body">
+    <div class="cm-enlum has-text-centered py-2">
+      <img src="<?php echo $this->assetUrl('img/mrm-icon.png'); ?>" alt="MRM">
+    </div>
+    <p class="bulma-subtitle has-text-centered">Découvrir nos</p>
+    <p class="bulma-title has-text-centered"><?php echo $translate('Item sets'); ?></p>
+    <div class="bulma-container bulma-is-max-tablet has-text-centered is-size-5">
+      <p>Gravures, estampes, objets culturels… Nos collections regorgent de trésors qui éclairent la personnalité de Jean-Jacques Rousseau.</p>
+    </div>
+  </div>
+</div>
+
+<?php $this->trigger('view.browse.before');?>
+
+<?php // affiche les items
+echo $this->partial('common/block-layout/browse-cards', [
+  'resources' => $itemSets,
+  'query' => $query
+]);
+?>
+
+<?php $this->trigger('view.browse.after'); ?>
+<!-- template end: omeka/site/item-set/browse -->

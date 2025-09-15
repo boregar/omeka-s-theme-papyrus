@@ -1,0 +1,105 @@
+<!-- template begin: omeka/site/item/show -->
+<?php
+$translate = $this->plugin('translate');
+$this->headLink()->appendStylesheet($this->assetUrl('css/resource-page-blocks.css', 'Omeka'));
+$this->htmlElement('body')->appendAttribute('class', 'item resource show');
+$filterLocale = (bool) $this->siteSetting('filter_locale_values');
+$lang = $this->lang();
+$valueLang = $filterLocale ? [$lang, ''] : null;
+
+// CM begin
+// crée le bloc de pagination pour les items précédent/suivant
+// les items précédent/suivant sont extraits de la structure $_SESSION['itemNav'] qui est:
+// - soit déjà construite par le template item/browse.phtml
+// - soit constuite à la volée
+
+$itemUrl = $item->url();
+$itemId = $item->id();
+$itemSetId = null;
+$itemPrev = null;
+$itemNext = null;
+// structure de navigation des items
+$itemNav = isset($_SESSION['itemNav']) ? $_SESSION['itemNav'] : [];
+$itemSetId = isset($_SESSION['itemSet']) ? $_SESSION['itemSet'] : null;
+
+// détermine les collections auxquelles appartient l'item
+$itemSetIds = [];
+foreach ($item->itemSets() as $itemSet) {
+  $itemSetIds[] = $itemSet->id();
+}
+
+// si on affiche cet item sans être passé par la sélection d'une collection
+// (ex. résultat de recherche, clic sur un item présenté sur la page d'accueil après avoir navigué dans une collection qui ne contient pas cet item),
+// on choisit arbitrairement la première des collections auxquelles appartient l'item
+if (count($itemSetIds) && ((!$itemSetId) || (!in_array($itemSetId, $itemSetIds)))) {
+  $itemSetId = $itemSetIds[0];
+  $_SESSION['itemSet'] = $itemSetId;
+}
+
+// si on affiche cet item, qu'il appartient à la collection en cours mais qu'il est dans une autre page, on considère qu'il est "isolé"
+$itemIsole = ($itemNav && count($itemNav) && !isset($itemNav[$itemId]));
+
+// si la structure de navigation est vide ou que l'item est isolé, on alimente la structure avec tous les items de la collection choisie
+if ((!count($itemNav) || $itemIsole) && $itemSetId) {
+  $navItemSave = null;   // stocke l'id de l'item en cours
+  $items = $this->api()->search('items', ['item_set_id' => $itemSetId, 'sort_by' => 'dcterms:title', 'sort_order' => 'asc'])->getContent();
+  foreach ($items as $navItem) {
+    // alimente la structure de navigation
+    $navItemId = $navItem->id();
+    $itemNav[$navItemId] = ['itemPrev' => $navItemSave, 'itemNext' => null];
+    if ($navItemSave) {
+      $itemNav[$navItemSave]['itemNext'] = $navItemId;
+    }
+    $navItemSave = $navItemId;
+  }
+  // stocke la structure de navigation dans une variable de session
+  $_SESSION['itemNav'] = $itemNav;
+}
+
+// détermine les items précédents et suivants de l'item en cours
+$itemPrevId = ($itemNav && isset($itemNav[$itemId])) ? $itemNav[$itemId]['itemPrev'] : null;
+$itemNextId = ($itemNav && isset($itemNav[$itemId])) ? $itemNav[$itemId]['itemNext'] : null;
+if ($itemPrevId) {
+  $itemPrev = $this->api()->read('items', $itemPrevId)?->getContent();
+}
+if ($itemNextId) {
+  $itemNext = $this->api()->read('items', $itemNextId)?->getContent();
+}
+?>
+
+<div class="bulma-hero bulma-is-medium cm-item-header mb-4" style="background-image: url('<?php echo $this->assetUrl('img/document-generic.jpg'); ?>')">
+  <?php echo $this->resourcePageBlocks($item, 'header')->getBlocks(); ?>
+</div>
+
+<div class="bulma-section cm-item-title">
+  <div class="bulma-container">
+    <h4 class="has-text-centered cm-resource-class cm-is-spaced"><?php echo $this->translate($item->displayResourceClassLabel()); ?></h4>
+    <h2 class="has-text-centered is-size-2"><?php echo $item->displayTitle(null, $valueLang); ?></h2>
+  </div>
+  <div class="bulma-container has-text-centered mt-6">
+    <div class="cm-item-nav">
+      <div class="cm-item-previous"><?php echo $itemPrev ? $this->LinkPretty($itemPrev) : ''; ?></div>
+      <div class="cm-item-current"><?php echo $this->LinkPretty($item); ?></div>
+      <div class="cm-item-next"><?php echo $itemNext ? $this->LinkPretty($itemNext) : ''; ?></div>
+    </div>
+  </div>
+</div>
+
+<div class="bulma-section cm-item-main">
+  <?php $this->trigger('view.show.before'); ?>
+  <div class="bulma-container bulma-is-max-desktop cm-is-gris-doux p-6">
+    <?php echo $this->resourcePageBlocks($item)->getBlocks(); ?>
+  </div>
+  <?php $this->trigger('view.show.after'); ?>
+</div>
+
+<div class="bulma-section cm-item-viewer">
+  <?php echo $this->resourcePageBlocks($item, 'viewer')->getBlocks(); ?>
+  <!-- <div id="osdViewer" class="openseadragon"></div> -->
+  <!-- echo $this->universalViewer($item, []); -->
+</div>
+
+<div class="bulma-section cm-item-footer px-0">
+    <?php echo $this->resourcePageBlocks($item, 'footer')->getBlocks(); ?>
+</div>
+<!-- template end: omeka/site/item/show -->

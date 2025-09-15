@@ -1,0 +1,25 @@
+<!-- template begin: common/block-layout/iso-cards -->
+<?php
+// variables transmises par le template common/block-layout/html
+$block_id = $expression['block_id'];
+$query = $expression['block_search'];
+$response = $this->api()->search('items', $query);
+$resources = $response->getContent();
+$title = isset($expression['block_title']) ? $expression['block_title'] : null;
+$description = isset($expression['block_description']) ? $expression['block_description'] : null;
+$totalResults = $response->getTotalResults();
+
+if ($totalResults === 0) {
+  echo '<pre>Aucun résultat</pre>';
+  return;
+}
+
+echo $this->partial('common/block-layout/browse-cards', [
+  'resources' => $resources,
+  'query' => $query,
+  'title' => $title,
+  'description' => $description,
+  'totalResults' => $totalResults
+]);
+?>
+<!-- template end: common/block-layout/iso-cards -->

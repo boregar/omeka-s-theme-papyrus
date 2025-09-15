@@ -1,0 +1,33 @@
+<!-- template begin: common/footer/footer-menu -->
+<?php
+// contruit le menu
+// les éléments du menu sont les "pages" d'un "container"
+// on parcourt récursivement le container et on crée le html au fur et à mesure en tenant compte des propriétés des pages
+
+$container = $site->publicNav()->menu()->getContainer();
+$iter = new RecursiveIteratorIterator($container, RecursiveIteratorIterator::SELF_FIRST);
+$saveDepth = 0;
+$html = '<ul>';
+$i = 0;
+// parcourt le container
+foreach ($iter as $page) {
+  $depth = $iter->getDepth();
+  $isActive = $page->isActive(true);
+  $hasChildren = (count($page->pages) > 0);
+  //$link = $site->publicNav()->menu()->htmlify($page);
+  $href = $page->getHref();
+  $label = $page->getLabel();
+  // élément de menu supérieur
+  if ($depth === 0) {
+    $html .= ('<li><a class="' . ($isActive ? 'is-active' : '') . '" href="' . $href . '">' . $label . '</a></li>');
+  }
+  // élément enfant
+  else {
+  }
+  $saveDepth = $depth;
+  $i++;
+}
+$html .= '</ul>';
+echo $html;
+?>
+<!-- template end: common/footer/footer-menu -->

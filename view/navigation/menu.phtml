@@ -1,0 +1,48 @@
+<!-- template begin: navigation/menu -->
+<?php
+// contruit le menu
+// les éléments du menu sont les "pages" d'un "container"
+// on parcourt récursivement le container et on crée le html au fur et à mesure en tenant compte des propriétés des pages
+
+/*
+echo ('<pre>');
+var_dump(get_class_methods($site->publicNav()));
+echo ('</pre>');
+*/
+
+$container = $site->publicNav()->menu()->getContainer();
+$iter = new RecursiveIteratorIterator($container, RecursiveIteratorIterator::SELF_FIRST);
+$saveDepth = 0;
+$html = '';
+$i = 0;
+// parcourt le container
+foreach ($iter as $page) {
+  $depth = $iter->getDepth();
+  $isActive = $page->isActive(true);
+  $hasChildren = (count($page->pages) > 0);
+  //$link = $site->publicNav()->menu()->htmlify($page);
+  $href = $page->getHref();
+  $label = $page->getLabel();
+  // élément de menu supérieur
+  if ($depth === 0) {
+    // si l'élément précédent était un enfant et qu'on revient au menu supérieur, ferme les div du navbar-dropdown et du navbar-item
+    if ($depth !== $saveDepth) {
+      $html .= '</div></div>';
+    }
+    $html .= ('<div class="bulma-navbar-item' . ($hasChildren ? ' bulma-has-dropdown bulma-is-hoverable">' : '">'));
+    $html .= ('<a class="bulma-navbar-link' . ($hasChildren ? '' : ' bulma-is-arrowless') . ($isActive ? ' is-active' : '') . '" href="' . $href . '">' . $label . '</a>' . ($hasChildren ? '<div class="bulma-navbar-dropdown bulma-is-right">' : '</div>'));
+  }
+  // élément enfant
+  else {
+    $html .= ('<a class="bulma-navbar-item' . ($isActive ? ' is-active' : '') . '" href="' . $href . '">' . $label . '</a>');
+  }
+  $saveDepth = $depth;
+  $i++;
+}
+// le dernier menu avait des enfants --> ferme les div du navbar-dropdown et du navbar-item
+if ($saveDepth !== 0) {
+  $html .= '</div></div>';
+}
+echo $html;
+?>
+<!-- template end: navigation/menu -->

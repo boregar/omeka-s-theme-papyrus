@@ -1,0 +1,42 @@
+<!-- template begin: common/search-form -->
+<?php
+$translate = $this->plugin('translate');
+$searchType = $this->siteSetting('search_type', 'sitewide');
+switch ($searchType) {
+    case 'cross-site':
+        $searchAction = $this->url('site/cross-site-search', ['action' => 'results'], true);
+        break;
+    case 'sitewide':
+    default:
+        $searchAction = $this->url('site/resource', ['controller' => 'index', 'action' => 'search'], true);
+}
+$searchValue = $this->escapeHtml($this->params()->fromQuery('fulltext_search', ''));
+?>
+<div class="bulma-section mt-6">
+  <div class="bulma-container bulma-is-max-widescreen has-text-centered bulma-block block">
+    <div class="bulma-message is-size-6">
+      <div class="bulma-message-header">
+        <h3 class="cm-is-spaced mb-0">Recherche</h3>
+        <button id="cm-close-icon" class="bulma-delete bulma-is-medium" aria-label="fermer"></button>
+      </div>
+      <div class="bulma-message-body">
+
+        <form action="<?php echo $this->escapeHtml($searchAction); ?>" id="search-form" class="bulma-panel-block is-flex-direction-column is-justify-content-center px-0">
+          <div class="bulma-control bulma-has-icons-left bulma-has-icons-right bulma-container bulma-is-max-tablet">
+            <input type="text" id="cm-fulltext" name="fulltext_search" size="30" maxlength="128" value="<?php echo $searchValue; ?>"
+                class="bulma-input bulma-is-medium"
+                placeholder="Chercher par mot-clé"
+                aria-label="Chercher par mot-clé">
+            <span class="bulma-icon bulma-is-left"><i class="fa-solid fa-search"></i></span>
+            <span class="bulma-icon bulma-is-right">
+              <button id="cm-reset-icon" class="bulma-delete"></button>
+            </span>
+          </div>
+          <button type="submit" class="button bulma-button bulma-is-medium mt-5">Envoyer</button>
+        </form>
+
+      </div>
+    </div>
+  </div>
+</div>
+<!-- template end: common/search-form -->

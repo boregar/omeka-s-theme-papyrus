@@ -1,0 +1,70 @@
+<!-- template begin: common/block-layout/html -->
+<?php
+
+$html = $block->dataValue('html', '');
+$class = $block->layoutDataValue('class');
+
+/*
+if ($class) {
+  $blockClasses = explode(' ', $block->layoutDataValue('class'));
+  if (in_array('cm-getitems', $blockClasses)) {
+    $itemSetId = 83;
+    $items = $this->api()->search('items', ['item_set_id' => $itemSetId, 'sort_by' => 'dcterms:title', 'sort_order' => 'asc', 'limit' => 10])->getContent();
+    //$items = $this->GetItems($itemSetId);
+    $content = $this->partial('common/block-layout/getitems', ['items' => $items]);
+  }
+}
+*/
+$expressions = array();
+preg_match_all('/\{\{\s(\{.+\})\s\}\}/', $html, $expressions);
+/*
+{{
+  {
+    "block_id":"slider-home",
+    "block_params":
+    {
+      "item_set_id":83,
+      "sort_by":"dcterms:title",
+      "sort_order":"asc",
+      "limit":10
+    }
+  }
+}}
+{{ {"block_id":"slider-home","block_search":{"resource_template_id":6,"sort_by":"dcterms:identifier","sort_order":"asc","limit":10}} }}
+{{ {"block_id":"iso-cards","block_params":{"item_set_id":83,"sort_by":"dcterms:title","sort_order":"asc","per_page":12,"page":1}} }}
+{{ {"block_id":"iso-cards","block_search":{"item_set_id":83,"sort_by":"dcterms:title","sort_order":"asc","per_page":12,"page":1},"block_title":"Sélection","block_description":"Quelques éléments remarquables extraits de nos collections"} }}
+
+preg_match_all('/<div class="cm\-filter" data\-filter="(\{\S+\})">.+<\/div>/', $html, $expressions);
+<div class="cm-filter" data-filter="{"block_id":"iso-cards","block_params":{"item_set_id":83,"sort_by":"dcterms:title","sort_order":"desc","per_page":12,"page":1}}">bloc iso-cards</div>
+*/
+// les expressions complètes sont dans le tableau $expressions[0], les jetons ($1) dans le tableau $expressions[1]
+foreach ($expressions[1] as $key => $value) {
+  // décode l'expression
+  $expression = json_decode(html_entity_decode($value), true);
+  // remplace l'expression par son évaluation
+  if (isset($expression['block_id'])) {
+    $eval = null;
+    $block_id = $expression['block_id'];
+    switch($block_id) {
+      // block du slider de la page d'accueil
+      case 'slider-home':
+      // block de galerie isotope
+      case 'iso-cards':
+        // une requête de recherche est nécessaire pour sélectionner les items
+        if (isset($expression['block_search'])) {
+          // produit le HTML
+          $eval = $this->partial('common/block-layout/' . $block_id, ['expression' => $expression]);
+        }
+        break;
+      default:
+    }
+    if ($eval) {
+      $html = str_replace($expressions[0][$key], $eval, $html);
+    }
+  }
+}
+
+echo $html;
+
+?>
+<!-- template end: common/block-layout/html -->
