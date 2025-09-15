@@ -1,5 +1,4 @@
-# omeka-s-theme-papyrus
-A responsive theme for Omeka-S
+# Papyrus theme for Omeka-S
 
 Papyrus is built on Omeka-S' default theme with an accent on accessibility and responsiveness.
 It depends on the following components:
