@@ -1,11 +1,12 @@
 //---------------------------------------- variables globales
 
-var osdViewer = null;
-var osdSourceType = null;
-var lgViewer = null;
-var scrollDiff = null;
-var isoGal = [];
-var flkGalHome = null;
+const omekaVars = {};       // contient les variables créées par les templates .phtml dans la zone backend > frontend
+
+var osdViewer = null;       // visionneuse OSD
+var lgViewer = null;        // visionneuse LightGallery
+var scrollDiff = null;      // voir le header sticky
+var isoGal = [];            // galeries Isotope
+var flkGalHome = null;      // galerie Flickity de la page d'accueil
 
 // ---------------------------------------- gestion des cookies
 
@@ -46,6 +47,14 @@ function addSpinnerManager(overlay) {
   document.body.onpagehide = function() {
     overlay.classList.remove('is-active');
   };
+}
+
+function setSpinnerOn() {
+  document.querySelector('overlay.spinner').classList.add('is-active');
+}
+
+function setSpinnerOff() {
+  document.querySelector('overlay.spinner').classList.remove('is-active');
 }
 
 //---------------------------------------- gestionnaire de l'icône de recherche
@@ -122,9 +131,9 @@ function addFlickityManager(flkBlock, flbEnable = false) {
     cellSelector: '.cm-flk-cell',
     contain: true,
     imagesLoaded: true,
-    wrapAround: (flkBlock.getAttribute('data-wraparound') === 'true'),
+    //wrapAround: (flkBlock.getAttribute('data-wraparound') === 'true'),
     freeScroll: (flkBlock.getAttribute('data-freescroll') === 'true'),
-    autoPlay: parseInt(flkBlock.getAttribute('data-autoplay')),
+    autoPlay: ((sPlay = flkBlock.getAttribute('data-autoplay')) && isNaN(iPlay = parseInt(sPlay))) ? true : iPlay,
     pauseAutoPlayOnHover: false,
     prevNextButtons: (flkBlock.getAttribute('data-prevnextbuttons') !== 'false'),
     draggable: (flkBlock.getAttribute('data-draggable') !== 'false'),
@@ -204,6 +213,121 @@ function addIsotopeManager(isotope, selector, sizer, origin, activate) {
   }
 }
 
+//---------------------------------------- gestionnaire de la visionneuse OpenSeadragon
+
+function addViewerManager(viewerLink) {
+  viewerLink.addEventListener('click', function(event) {
+    event.preventDefault();
+    //event.stopPropagation();
+    // la source de la visionneuse a été définie dans le template common/resource-page-block-layout/media-list
+    if ((tileSources = omekaVars.tileSources) && tileSources.length) {
+      setSpinnerOn();
+      osdView(tileSources);
+    }
+    return false;
+  });
+}
+
+// visualisation d'une source d'images
+function osdView(tileSources) {
+
+  // si le viewer a déjà été créé, on charge simplement les images
+  if (osdViewer) {
+    osdViewer.close().open(tileSources);
+    // ajoute un gestionnaire pour préparer la 1ère page --> supprimé juste après le chargement de la 1ère page
+    //osdViewer.addHandler('open', osdPreparePage);
+  }
+  // sinon on crée le viewer
+  else {
+    // la valeur par défaut de crossOriginPolicy (false) empêche l'affichage des images (canvas) dans Firefox
+    // on peut utiliser l'option "crossOriginPolicy: 'Anonymous'" mais elle n'est pas utilisée par le viewer de la referenceStrip
+    // --> on modifie directement la valeur définie par défaut
+    OpenSeadragon.DEFAULT_SETTINGS.crossOriginPolicy = 'Anonymous';
+    // initialise le viewer
+    osdViewer = OpenSeadragon({
+      id: 'osdViewer',
+      //preload: true,
+      prefixUrl: '/themes/boregar-papyrus/asset/libraries/openseadragon/images/',
+      immediateRender: false,
+      //toolbar: 'osdControls',
+      autoHideControls: false,
+      showNavigationControl: true,
+      navigationControlAnchor: OpenSeadragon.ControlAnchor.TOP_RIGHT,
+      showZoomControl: true,
+      showHomeControl: true,
+      showFullPageControl: false,
+      showRotationControl: true,
+      showFlipControl: true,
+      showSequenceControl: true,
+      sequenceControlAnchor: OpenSeadragon.ControlAnchor.TOP_RIGHT,
+      //zoomInButton: 'osdZoomIn',
+      //zoomOutButton: 'osdZoomOut',
+      //homeButton: 'osdZoomReset',
+      //nextButton: 'osdNext',
+      //previousButton: 'osdPrevious',
+      //rotateRightButton: 'osdRotate',
+      //preserveViewport: false,
+      defaultZoomLevel: 0,
+      maxZoomLevel: 3,
+      maxZoomPixelRatio: 12,
+      minZoomLevel: 0.2,
+      minZoomImageRatio: 0.8,
+      sequenceMode: true,
+      showReferenceStrip: true,
+      //referenceStripScroll: 'vertical',
+      /*viewportMargins: {
+        top: 20,
+        left: 0,
+        right: 0,
+        bottom: 20
+      },*/
+      //crossOriginPolicy: 'Anonymous',
+      tileSources: tileSources
+    });
+
+    var closeButton = new OpenSeadragon.Button({
+      tooltip: 'Close',
+      srcRest: '/themes/boregar-papyrus/asset/libraries/openseadragon/images/close_rest.png',
+      srcGroup: '/themes/boregar-papyrus/asset/libraries/openseadragon/images/close_grouphover.png',
+      srcHover: '/themes/boregar-papyrus/asset/libraries/openseadragon/images/close_hover.png',
+      srcDown: '/themes/boregar-papyrus/asset/libraries/openseadragon/images/close_pressed.png',
+      onClick: osdClose
+    });
+    osdViewer.addControl(closeButton.element, {
+      anchor: OpenSeadragon.ControlAnchor.TOP_RIGHT
+    });
+
+    /*
+    // clic sur le bouton close
+    document.querySelector('overlay.cm-item-viewer div[title="Close"]')?.addEventListener('click', function(event) {
+      osdClose(event);
+		});
+    */
+
+    // ajoute un gestionnaire pour préparer la 1ère page --> supprimé juste après le chargement de la 1ère page
+    //osdViewer.addHandler('open', osdPreparePage);
+    // ajoute le gestionnaire de changement de page (la valeur 'zzz' est passée à osdPreparePage dans event.userData)
+    //osdViewer.addHandler('page', osdPreparePage, 'zzz');
+    // ajoute le gestionnaire de chargement des tiles
+    osdViewer.addHandler('tile-loaded', osdTileLoaded);
+    // ajoute le gestionnaire de destruction du viewer
+    //osdViewer.addHandler('destroy', osdDestroy);
+
+  }
+}
+
+function osdTileLoaded(event) {
+  document.querySelector('overlay.cm-item-viewer').classList.add('is-active');
+  setSpinnerOff();
+}
+
+function osdClose(event) {
+	if (!osdViewer) return;
+  osdViewer.tileSources = [];
+  osdViewer.close();
+  document.querySelector('overlay.cm-item-viewer').classList.remove('is-active');
+}
+
 //---------------------------------------- gestionnaire de la visionneuse LG
 
 // note: cette fonction remplace le fichier par défaut /sites/omksa.boregar.org/omeka-s/application/asset/js/lg-itemfiles-config.js
@@ -240,6 +364,138 @@ function addMediaManagerLG(lgContainer) {
       actualSize: false,*/
   });
   lgViewer.openGallery();
+}
+
+//---------------------------------------- positionne le mode de visualisation
+
+function toggleViewMode(ctrlGroup, viewMode) {
+  if (!['list', 'cards', 'grid'].includes(viewMode)) {
+    viewMode = 'cards';
+  }
+  ctrlGroup.querySelector('button[data-setting="view-mode"].is-active')?.classList.remove('is-active');
+  btnActive = ctrlGroup.querySelector('button[data-setting="view-mode"][data-value="' + viewMode + '"]');
+  btnActive.classList.add('is-active');
+  // todo
+  setCookie('MRMViewMode', viewMode, 30);
+}
+
+//---------------------------------------- positionne le nombre d'éléments par page
+
+function togglePerPage(ctrlGroup, perPage) {
+  if (!['12', '24', '48'].includes(perPage)) {
+    perPage = omekaVars.perPage;
+  }
+  ctrlGroup.querySelector('button[data-setting="per-page"].is-active')?.classList.remove('is-active');
+  btnActive = ctrlGroup.querySelector('button[data-setting="per-page"][data-value="' + perPage + '"]');
+  btnActive.classList.add('is-active');
+  query = window.location.search;
+  queryNew = null;
+  if (query) {
+    if (query.match(/per_page=(\d+)/)) {
+      if (query.match(/per_page=(\d+)/)[1] !== perPage) {
+        queryNew = query.replace(query.match(/per_page=(\d+)/)[0], 'per_page=' + perPage);
+      }
+    } else if (perPage !== omekaVars.perPage) {
+      queryNew = query + '&per_page=' + perPage;
+    }
+  } else if (perPage !== omekaVars.perPage) {
+    queryNew = '?per_page=' + perPage;
+  }
+  if (queryNew) {
+    window.location = window.location.pathname + queryNew;
+  }
+  return false;
+}
+
+//---------------------------------------- positionne le classement
+
+function toggleSortBy(ctrlGroup, sortBy) {
+  if (!['star', 'rico:identifier', 'title', 'numeric:timestamp:674'].includes(sortBy)) {
+    sortBy = 'rico:identifier';
+  }
+  ctrlGroup.querySelector('button[data-setting="sort-by"].is-active')?.classList.remove('is-active');
+  btnActive = ctrlGroup.querySelector('button[data-setting="sort-by"][data-value="' + sortBy + '"]');
+  btnActive.classList.add('is-active');
+  query = window.location.search;
+  queryNew = null;
+  if (query) {
+    if (query.match(/sort_by=([a-z1-9:]+)/)) {
+      if (query.match(/sort_by=([a-z1-9:]+)/)[1] !== sortBy) {
+        queryNew = query.replace(query.match(/sort_by=([a-z1-9:]+)/)[0], 'sort_by=' + sortBy);
+      }
+    } else if (sortBy !== omekaVars.sortBy) {
+      queryNew = query + '&sort_by=' + sortBy;
+    }
+  } else if (sortBy !== omekaVars.sortBy) {
+    queryNew = '?sort_by=' + sortBy;
+  }
+  if (queryNew) {
+    window.location = window.location.pathname + queryNew;
+  }
+  return false;
+}
+
+//---------------------------------------- positionne le classement
+
+function toggleSortOrder(ctrlGroup, sortOrder) {
+  if (!['asc', 'desc'].includes(sortOrder)) {
+    sortBy = 'asc';
+  }
+  ctrlGroup.querySelector('button[data-setting="sort-order"].is-active')?.classList.remove('is-active');
+  btnActive = ctrlGroup.querySelector('button[data-setting="sort-order"][data-value="' + sortOrder + '"]');
+  btnActive.classList.add('is-active');
+  query = window.location.search;
+  queryNew = null;
+  if (query) {
+    if (query.match(/sort_order=((asc|desc))/)) {
+      if (query.match(/sort_order=((asc|desc))/)[1] !== sortOrder) {
+        queryNew = query.replace(query.match(/sort_order=((asc|desc))/)[0], 'sort_order=' + sortOrder);
+      }
+    } else if (sortOrder !== omekaVars.sortOrder) {
+      queryNew = query + '&sort_order=' + sortOrder;
+    }
+  } else if (sortOrder !== omekaVars.sortOrder) {
+    queryNew = '?sort_order=' + sortOrder;
+  }
+  if (queryNew) {
+    window.location = window.location.pathname + queryNew;
+  }
+  return false;
+}
+//---------------------------------------- gestionnaire du layout
+
+function addCtrlManager(ctrlGroup) {
+  // ajoute le gestionnaire de clic
+  ctrlGroup.addEventListener('click', function(event) {
+    var btn = event.target.closest('button');
+    // ne traite pas le clic si le bouton est déjà actif
+    if (btn.classList.contains('is-active')) {
+      return false;
+    }
+    // identifie les paramètres du bouton
+    var dataSetting = btn.getAttribute('data-setting');
+    var dataValue = btn.getAttribute('data-value');
+    switch(dataSetting) {
+      // mode de visualisation
+      case 'view-mode':
+        toggleViewMode(ctrlGroup, dataValue);
+        break;
+      // nombre d'éléments par page
+      case 'per-page':
+        togglePerPage(ctrlGroup, dataValue);
+        break;
+      // classement
+      case 'sort-by':
+        toggleSortBy(ctrlGroup, dataValue);
+        break;
+      // ordre de tri
+      case 'sort-order':
+        toggleSortOrder(ctrlGroup, dataValue);
+        break;
+      // default
+      default:
+    }
+  });
 }
 
 //---------------------------------------- main
@@ -307,8 +563,8 @@ document.addEventListener('DOMContentLoaded', function () {
   if (lgContainer = document.getElementById('itemfiles')) {
     addMediaManagerLG(lgContainer);
   }
-  // si un viewer OSD est déjà instancié, on peut obtenir une référence de cette manière
   /*
+  // si un viewer OSD est déjà instancié, on peut obtenir une référence de cette manière
   if (osdContainer = document.querySelector('.openseadragon')) {
     var originalIsOpen = OpenSeadragon.Viewer.prototype.isOpen;
     OpenSeadragon.Viewer.prototype.isOpen = function() {
@@ -316,6 +572,10 @@ document.addEventListener('DOMContentLoaded', function () {
       osdViewer = this;
       //osdViewer.addHandler('tile-loaded', osdFitViewer);
       //osdViewer.addHandler('resize', osdFitViewer);
+
+      // fixe le niveau de zoom maximum
+      osdViewer.viewport.maxZoomLevel = 3;
+
       // Reinstate the original, since we only need to run our version once
       OpenSeadragon.Viewer.prototype.isOpen = originalIsOpen;
       // Call the original
@@ -323,6 +583,26 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   }
   */
+  if (visionneuse = document.getElementById('osdViewer')) {
+    if (document.querySelector('.media-list.cm-flk-block .cm-flk-cell a.resource-link')) {
+      addViewerManager(document.querySelector('.media-list.cm-flk-block'));
+    }
+  }
+
+  // ajoute le gestionnaire du layout
+  if (ctrlLayout = document.querySelector('.cm-search-layout')) {
+    // positionne le mode de visualisation d'après le cookie
+    toggleViewMode(ctrlLayout, getCookie('MRMViewMode'));
+    togglePerPage(ctrlLayout, omekaVars.perPage);
+    addCtrlManager(ctrlLayout);
+  }
+
+  // ajoute le gestionnaire des filtres
+  if (ctrlSort = document.querySelector('.cm-search-sort')) {
+    toggleSortBy(ctrlSort, omekaVars.sortBy);
+    toggleSortOrder(ctrlSort, omekaVars.sortOrder);
+    addCtrlManager(ctrlSort);
+  }
 
   setTimeout(function() {
     // force la galerie isotope à se réarranger (bug d'affichage)
@@ -331,6 +611,28 @@ document.addEventListener('DOMContentLoaded', function () {
         item.arrange();
       });
     }
+
+    // l'éditeur de pages d'Omeka-S ne permet pas d'affecter un id aux blocs --> on ajoute au bloc la classe "cm-anchor-[id]" dans l'éditeur
+    // puis, côté client, si l'URL contient une ancre de type "cm-anchor", on récupère l'id et on se positionne sur le bloc correspondant
+    if (anchorId = window.location.search.match(/^\?a=([a-z0-9\-]+)$/)) {
+      if (elem = document.querySelector('.cm-anchor-' + anchorId[1])) {
+        elem.scrollIntoView();
+        // compense le problème de l'offset négatif d'Omeka
+        setTimeout(function() {
+          elem.scrollIntoView();
+        }, 200);
+      }
+    }
+
+    // si la page correspond au résultat d'une recherche, se positionne sur les résultats
+    if (window.location.search && (searchHeader = document.querySelector('.cm-search-header'))) {
+      searchHeader.scrollIntoView();
+      // compense le problème de l'offset négatif d'Omeka
+      setTimeout(function() {
+        searchHeader.scrollIntoView();
+      }, 200);
+    }
+
   }, 200);
 
 }, false);

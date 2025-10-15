@@ -495,7 +495,15 @@ h1, h2, h3, h4, h5, h6 {
   border-radius: var(--cm-radius);
 }
 
+.cm-is-inline-flex {
+  display: inline-flex;
+}
+
 /* ---------------------------------------- corrections Bulma */
+
+h2.is-size-2 {
+  line-height: 1.2;
+}
 
 p:not(:last-child) {
   margin-bottom: revert;
@@ -623,6 +631,7 @@ overlay.spinner.is-active::before {
   background: white;
   opacity: 0.8;
 }
+
 overlay.spinner.is-active::after {
   content: '';
   box-sizing: border-box;
@@ -778,16 +787,16 @@ a.bulma-navbar-item:hover,
 
 /* ---------------------------------------- item-set > galerie flickity */
 
-.itemset-list.cm-flk-block {
+.resource-list.cm-flk-block {
   margin: 4rem 0;
   padding-bottom: 4rem;
 }
 
-.itemset-list.cm-flk-block .flickity-viewport {
+.resource-list.cm-flk-block .flickity-viewport {
   overflow: visible;
 }
 
-.itemset-list.cm-flk-block .item-set {
+.resource-list.cm-flk-block .resource {
   display: grid;
   grid-template-columns: 40rem;
   grid-template-rows: min-content 1fr;
@@ -795,24 +804,24 @@ a.bulma-navbar-item:hover,
   max-width: 100%;
 }
 
-.itemset-list.cm-flk-block .item-set:nth-child(n+1) {
+.resource-list.cm-flk-block .resource:nth-child(n+1) {
   top: 2.5rem;
 }
 
-.itemset-list.cm-flk-block .item-set:nth-child(2n+1) {
+.resource-list.cm-flk-block .resource:nth-child(2n+1) {
   top: -2.5rem;
 }
 
-.itemset-list.cm-flk-block .item-set:nth-child(3n+1) {
+.resource-list.cm-flk-block .resource:nth-child(3n+1) {
   top: 0;
 }
 
-.itemset-list.cm-flk-block .item-set .cm-item-img {
+.resource-list.cm-flk-block .resource .cm-item-img {
   grid-column: 1;
   grid-row: 1;
 }
 
-.itemset-list.cm-flk-block .item-set img {
+.resource-list.cm-flk-block .resource img {
   border-radius: var(--cm-radius);
   object-fit: cover;
   width: 42rem;
@@ -822,7 +831,7 @@ a.bulma-navbar-item:hover,
   box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.2);
 }
 
-.itemset-list.cm-flk-block .item-set .cm-item-title {
+.resource-list.cm-flk-block .resource .cm-item-title {
   grid-column: 1;
   grid-row: 2;
   justify-self: center;
@@ -916,16 +925,8 @@ a.bulma-navbar-item:hover,
   background-repeat: no-repeat;
   background-size: cover;
   background-position-y: 40%;
-  height: calc(100vh - 20rem);
-  min-height: 40rem;
+  height: 60vh;
   overflow: hidden;
-}
-
-@media screen and (max-width: 40rem) {
-  .cm-item-header {
-    height: 50vh;
-    min-height: unset;
-  }
 }
 
 .cm-item-nav {
@@ -941,6 +942,7 @@ a.bulma-navbar-item:hover,
   grid-template-rows: 1fr;
   width: 100%;
   height: 100%;
+  overflow: hidden;
 }
 
 .cm-item-nav a.resource-link img {
@@ -959,29 +961,33 @@ a.bulma-navbar-item:hover,
   grid-row: 1;
   justify-self: center;
   align-self: center;
+  text-align: center;
   filter: opacity(0);
   color: white;
   padding: .5rem;
+  line-height: normal;
 }
 
 .cm-item-nav .cm-item-previous a.resource-link .resource-name {
   justify-self: right;
+  text-align: right;
 }
 
 .cm-item-nav .cm-item-next a.resource-link .resource-name {
   justify-self: left;
+  text-align: left;
 }
 
 .cm-item-nav > div {
-  width: 200px;
-  height: 200px;
+  width: 8rem;
+  height: 8rem;
   background-color: var(--color-gris-doux);
 }
 
 @media screen and (max-width: 40em) {
   .cm-item-nav > div {
-    width: 100px;
-    height: 100px;
+    width: 6rem;
+    height: 6rem;
   }
 }
 
@@ -1001,16 +1007,28 @@ a.bulma-navbar-item:hover,
   clip-path: polygon(0% 0%, 75% 0%, 100% 50%, 75% 100%, 0% 100%);
 }
 
+.cm-item-viewer {
+  height: 100vh;
+  display: block;
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.cm-item-viewer.is-active {
+  opacity: 1;
+  z-index: 1000;
+}
+
 .cm-item-viewer .lg-backdrop {
   background-color: var(--color-gris-doux);
 }
 
-/*
-.openseadragon {
-  height: calc(100vh - 16rem);
+.cm-item-viewer .openseadragon {
+  height: 100%;
   min-height: 44rem;
   width: 100%;
-  line-height: 0; /* Drupal ajoute un &nbsp; dans le bloc du viewer, ce qui provoque l'appartion d'une ligne vide au sommet du viewer *
+  line-height: 0;
   position: relative;
   background-color: #f9fcf9;
   border: 1px solid var(--color-gris-base);
@@ -1018,12 +1036,12 @@ a.bulma-navbar-item:hover,
   cursor: grab;
 }
 @media screen and (max-width: 72em) {
-  .openseadragon {
-    width: calc(100% - 4rem);
+  .cm-item-viewer .openseadragon {
+    width: 100%;
     margin: auto;
   }
 }
-*/
+
 .cm-item-main dl {
   margin-bottom: 1rem;
 }
@@ -1098,23 +1116,35 @@ a.bulma-navbar-item:hover,
   grid-template-rows: 1fr;
   width: 100%;
   height: 100%;
+  overflow: hidden;
   cursor: zoom-in;
 }
 
 .media-list.cm-flk-block .cm-flk-cell a.resource-link img {
   grid-column: 1;
   grid-row: 1;
+  transition: .2s;
   width: 100%;
-  height: 100%;
+  height: 60vh;
   max-width: unset;
   object-fit: cover;
-  object-position: 50% 40%;
-  filter: brightness(0.98);
+  filter: contrast(.6) brightness(.4);
 }
 
 .media-list.cm-flk-block .cm-flk-cell a.resource-link .resource-name {
   grid-column: 1;
   grid-row: 1;
+  justify-self: center;
+  align-self: center;
+  color: white;
+  font-size: 2.5rem;
+  line-height: 1.2;
+  font-weight: var(--cm-font-title-weight);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  text-align: center;
+  max-width: 48rem;
+  z-index: 1;
 }
 
 .media-list.cm-flk-block .flickity-button:disabled {
@@ -1122,6 +1152,7 @@ a.bulma-navbar-item:hover,
 }
 
 .media-list.cm-flk-block .flickity-page-dots {
+  display: none;
   bottom: 2rem;
   z-index: 2;
 }
@@ -1361,6 +1392,53 @@ a.bulma-navbar-item:hover,
     grid-column: 1;
     grid-row: 2;
   }
+}
+
+/* ---------------------------------------- contrôles / pagination */
+
+.cm-search-header .bulma-button {
+  width: 2.75rem;
+}
+
+.cm-search-header .bulma-button.is-active {
+  background-color: var(--cm-color-boregar);
+  color: white;
+  border-color: var(--cm-color-boregar);
+  z-index: 1;
+}
+
+.cm-search-header .bulma-buttons .bulma-button:first-of-type {
+  border-top-left-radius: .5rem;
+  border-bottom-left-radius: 0.5rem;
+}
+
+.cm-search-header .bulma-buttons .bulma-button:last-of-type {
+  border-top-right-radius: .5rem;
+  border-bottom-right-radius: 0.5rem;
+}
+
+.cm-search-header .bulma-button[data-setting="sort-order"].is-active {
+  display: block;
+}
+
+.bulma-pagination-link {
+  background-color: white;
+}
+
+.bulma-pagination-link.is-active {
+  background-color: var(--cm-color-boregar);
+  color: white;
+  border-color: var(--cm-color-boregar);
+}
+
+.bulma-pagination-list li:first-of-type .bulma-pagination-link {
+  border-top-left-radius: .5rem;
+  border-bottom-left-radius: 0.5rem;
+}
+
+.bulma-pagination-list li:last-of-type .bulma-pagination-link {
+  border-top-right-radius: .5rem;
+  border-bottom-right-radius: 0.5rem;
 }
 
 /* ---------------------------------------- footer */

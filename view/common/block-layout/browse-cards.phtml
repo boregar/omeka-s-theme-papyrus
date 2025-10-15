@@ -4,6 +4,9 @@ $escape = $this->plugin('escapeHtml');
 
 $title = isset($title) ? $title : null;
 $description = isset($description) ? $description : null;
+$pagination = isset($pagination) ? $pagination : null;
+$linkText = isset($linkText) ? $linkText : null;
+$resourceType = isset($resourceType) ? $resourceType : null;
 $totalResults = (isset($totalResults) && $totalResults) ? $totalResults : count($resources);
 $page = isset($query['page']) ? $query['page'] : 1;
 $perPage = isset($query['per_page']) ? $query['per_page'] : $totalResults;
@@ -27,8 +30,8 @@ $offsetEnd = ($offsetEnd > $totalResults) ? $totalResults : $offsetEnd;
           <div class="bulma-content">
             <?php if ($title): ?><h2 class="has-text-centered is-size-2"><?php echo $escape($title); ?></h2><?php endif; ?>
             <?php if ($description): ?><p class="has-text-centered"><?php echo $escape($description); ?></p><?php endif; ?>
-            <p class="has-text-centered"><?php echo sprintf('%s - %s / %s [%s]', $offsetStart, $offsetEnd, $totalResults, $limit); ?></p>
-            <p class="has-text-centered"><?php echo sprintf('page %s - perPage %s', $page, $perPage); ?></p>
+            <!-- <?php echo sprintf('%s - %s / %s [%s]', $offsetStart, $offsetEnd, $totalResults, $limit); ?> -->
+            <!-- <?php echo sprintf('page %s - perPage %s', $page, $perPage); ?> -->
           </div>
         </div>
       </li>
@@ -39,9 +42,20 @@ $offsetEnd = ($offsetEnd > $totalResults) ? $totalResults : $offsetEnd;
       </li>
       <?php endforeach; ?>
     </ul>
+    <?php if ($pagination): ?>
     <div class="browse-controls">
-      <?php echo $this->pagination(); ?>
+      <?php echo $pagination; ?>
     </div>
+    <?php endif; ?>
+    <?php if ($linkText): ?>
+      <?php
+      //$linkMore = $this->hyperlink($linkText, $this->url('site/resource', ['controller' => $resourceType, 'action' => 'browse'], ['query' => $query], true));
+      $linkMore = $this->hyperlink($linkText, $this->url('site/resource', ['controller' => $resourceType, 'action' => 'browse'], null, true));
+       ?>
+       <div class="bulma-content has-text-centered">
+         <button type="submit" class="button bulma-button bulma-is-medium mt-5"><?php echo $linkMore; ?></button>
+       </div>
+    <?php endif; ?>
   </div>
 </div>
 <!-- template end: common/block-layout/browse-cards -->

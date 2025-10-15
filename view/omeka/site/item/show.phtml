@@ -67,21 +67,24 @@ if ($itemNextId) {
 }
 ?>
 
-<div class="bulma-hero bulma-is-medium cm-item-header mb-4" style="background-image: url('<?php echo $this->assetUrl('img/document-generic.jpg'); ?>')">
+<div class="bulma-hero bulma-is-medium cm-item-header mb-4">
   <?php echo $this->resourcePageBlocks($item, 'header')->getBlocks(); ?>
 </div>
 
 <div class="bulma-section cm-item-title">
-  <div class="bulma-container">
-    <h4 class="has-text-centered cm-resource-class cm-is-spaced"><?php echo $this->translate($item->displayResourceClassLabel()); ?></h4>
-    <h2 class="has-text-centered is-size-2"><?php echo $item->displayTitle(null, $valueLang); ?></h2>
-  </div>
-  <div class="bulma-container has-text-centered mt-6">
+  <div class="bulma-container has-text-centered mb-6">
     <div class="cm-item-nav">
       <div class="cm-item-previous"><?php echo $itemPrev ? $this->LinkPretty($itemPrev) : ''; ?></div>
       <div class="cm-item-current"><?php echo $this->LinkPretty($item); ?></div>
       <div class="cm-item-next"><?php echo $itemNext ? $this->LinkPretty($itemNext) : ''; ?></div>
     </div>
+  </div>
+  <div class="bulma-container bulma-is-max-desktop mb-6">
+    <h4 class="has-text-centered cm-resource-class cm-is-spaced my-4"><?php echo $this->translate($item->displayResourceClassLabel()); ?></h4>
+    <h2 class="has-text-centered is-size-2"><?php echo $item->displayTitle(null, $valueLang); ?></h2>
+  </div>
+  <div class="bulma-container bulma-is-max-tablet has-text-centered is-size-5">
+    <?php echo $item->displayDescription(null, null); ?>
   </div>
 </div>
 
@@ -93,11 +96,11 @@ if ($itemNextId) {
   <?php $this->trigger('view.show.after'); ?>
 </div>
 
-<div class="bulma-section cm-item-viewer">
+<overlay class="bulma-section cm-item-viewer">
   <?php echo $this->resourcePageBlocks($item, 'viewer')->getBlocks(); ?>
-  <!-- <div id="osdViewer" class="openseadragon"></div> -->
+  <div id="osdViewer" class="openseadragon"></div>
   <!-- echo $this->universalViewer($item, []); -->
-</div>
+</overlay>
 
 <div class="bulma-section cm-item-footer px-0">
     <?php echo $this->resourcePageBlocks($item, 'footer')->getBlocks(); ?>

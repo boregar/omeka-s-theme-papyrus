@@ -17,18 +17,25 @@ if ($totalResults === 0) {
   return;
 }
 
-echo $this->partial('common/block-layout/browse-cards', [
+$partial = 'browse-cards';
+
+$class = $block->layoutDataValue('class');
+if ($class) {
+  $blockClasses = explode(' ', $class);
+  if (in_array('browse-flk', $blockClasses)) {
+    $partial = 'browse-flk';
+  }
+}
+
+echo $this->partial('common/block-layout/' . $partial, [
   'resources' => $resources,
+  'resourceType' => $this->resourceType,
   'query' => $query,
   'title' => $title,
   'description' => $description,
-  'totalResults' => $totalResults
+  'totalResults' => $totalResults,
+  'linkText' => $linkText,
+  'pagination' => $this->pagination()
 ]);
-
-if ($this->linkText):
-  echo $this->hyperlink($this->linkText, $this->url(
-    'site/resource', ['controller' => $this->resourceType, 'action' => 'browse'], ['query' => $this->query], true
-  ));
-endif;
 ?>
 <!-- template end: common/block-layout/browse-preview -->
