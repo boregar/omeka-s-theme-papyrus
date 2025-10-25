@@ -1,14 +1,14 @@
 <!-- template begin: common/forms/newsletter -->
-<form  id="cm-form-news" name="cm-form-news" method="post" action="" class="inf-form">
+<form  id="cm-form-news" name="cm-form-news" method="post" action="<?php echo $this->themeSetting('newsletter_form_action'); ?>" class="inf-form">
   <input type="email" name="email" style="display:none" />
-  <input type="hidden" name="key" value="">
-  <input type="hidden" name="webform_id" value="">
-  <div class="inf-main">
+  <input type="hidden" name="key" value="<?php echo $this->themeSetting('newsletter_key_value'); ?>">
+  <input type="hidden" name="webform_id" value="<?php echo $this->themeSetting('newsletter_webform_id_value'); ?>">
+  <div class="<?php echo $this->themeSetting('newsletter_div_class'); ?>">
     <div class="inf-content">
       <div class="bulma-field">
-        <p>I subscribe to your newsletter</p>
+        <p>Je veux recevoir la newsletter</p>
         <div class="inf-input inf-input-text bulma-control bulma-has-icons-left cm-form-email">
-          <input class="bulma-input" type="email" placeholder="E-mail" value="" name="inf[1]" data-inf-meta="1" data-inf-error="" required="required">
+          <input class="bulma-input" type="email" placeholder="Mon e-mail" value="" name="inf[1]" data-inf-meta="1" data-inf-error="" required="required">
           <span class="bulma-icon bulma-is-small bulma-is-left">
             <i class="fas fa-envelope"></i>
           </span>
@@ -18,10 +18,11 @@
         <div class="bulma-control">
           <div class="bulma-checkbox">
             <input type="checkbox" id="cm-form-news-cgu">
-            I have read and I accept <a href="/notice#cgu">the conditions</a>
+            J'ai lu et j'accepte <a href="/notice?a=cgu">les CGU</a>
           </div>
         </div>
       </div>
+      <?php echo $this->themeSetting('newsletter_altcha_block'); ?>
       <div class="bulma-field">
         <div class="bulma-control">
           <div class="inf-submit">

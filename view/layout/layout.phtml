@@ -1,7 +1,4 @@
 <?php
-//include './themes/boregar-papyrus/asset/debug/kint.phar';
-//Kint::$depth_limit = 3;
-
 $escape = $this->plugin('escapeHtml');
 $siteTitle = $site->title();
 $this->htmlElement('html')->setAttribute('lang', $this->lang());
@@ -14,20 +11,20 @@ $this->headScript()->prependFile($this->assetUrl('js/global.js', 'Omeka'));
 $this->headScript()->prependFile($this->assetUrl('vendor/jquery/jquery.min.js', 'Omeka'));
 
 // libraries begin
-$this->headLink()->appendStylesheet($this->assetUrl('libraries/bulma/css/versions/bulma-prefixed-no-dark-mode.min.css'));
-$this->headLink()->appendStylesheet($this->assetUrl('libraries/bulma/extensions/timeline/bulma-timeline.min.css'));
-$this->headLink()->appendStylesheet($this->assetUrl('libraries/flickity/css/flickity.min.css'));
-$this->headLink()->appendStylesheet($this->assetUrl('libraries/flickity/css/flickity-fade.css'));
+$this->headLink()->appendStylesheet('https://dist.boregar.org/libraries/bulma/css/versions/bulma-prefixed-no-dark-mode.min.css');
+$this->headLink()->appendStylesheet('https://dist.boregar.org/libraries/bulma/extensions/timeline/bulma-timeline.min.css');
+$this->headLink()->appendStylesheet('https://dist.boregar.org/libraries/flickity/css/flickity.min.css');
+$this->headLink()->appendStylesheet('https://dist.boregar.org/libraries/flickity/css/flickity-fade.css');
 $this->headLink()->appendStylesheet($this->assetUrl('css/base.css'));
-$this->headScript()->appendFile($this->assetUrl('libraries/fontawesome/js/fontawesome.min.js'));
-$this->headScript()->appendFile($this->assetUrl('libraries/fontawesome/js/solid.min.js'));
-$this->headScript()->appendFile($this->assetUrl('libraries/fontawesome/js/regular.min.js'));
-$this->headScript()->appendFile($this->assetUrl('libraries/fontawesome/js/brands.min.js'));
-$this->headScript()->appendFile($this->assetUrl('libraries/flickity/js/flickity.pkgd.min.js'));
-$this->headScript()->appendFile($this->assetUrl('libraries/flickity/js/flickity-fade.js'));
-$this->headScript()->appendFile($this->assetUrl('libraries/isotope/isotope.pkgd.min.js'));
-$this->headScript()->appendFile($this->assetUrl('libraries/fslightbox/fslightbox.js'));
-$this->headScript()->appendFile($this->assetUrl('libraries/openseadragon/openseadragon.js'));
+$this->headScript()->appendFile('https://dist.boregar.org/libraries/fontawesome/js/fontawesome.min.js');
+$this->headScript()->appendFile('https://dist.boregar.org/libraries/fontawesome/js/solid.min.js');
+$this->headScript()->appendFile('https://dist.boregar.org/libraries/fontawesome/js/regular.min.js');
+$this->headScript()->appendFile('https://dist.boregar.org/libraries/fontawesome/js/brands.min.js');
+$this->headScript()->appendFile('https://dist.boregar.org/libraries/flickity/js/flickity.pkgd.min.js');
+$this->headScript()->appendFile('https://dist.boregar.org/libraries/flickity/js/flickity-fade.js');
+$this->headScript()->appendFile('https://dist.boregar.org/libraries/isotope/isotope.pkgd.min.js');
+$this->headScript()->appendFile('https://dist.boregar.org/libraries/fslightbox/fslightbox.js');
+$this->headScript()->appendFile('https://dist.boregar.org/libraries/openseadragon/openseadragon.js');
 $this->headScript()->appendFile($this->assetUrl('js/matomo.js'));
 $this->headScript()->appendFile($this->assetUrl('js/base.js'));
 // libraries end
@@ -125,5 +122,14 @@ $userBar = $this->userBar();
         <?php echo $this->partial('common/footer/footer'); ?>
       </footer>
     </div>
+    <!-- backend > frontend -->
+    <?php
+    $realDocRoot = realpath($_SERVER['DOCUMENT_ROOT']);
+    $realDirPath = realpath(__DIR__);
+    $themePath = str_replace('/view/layout', '', str_replace($realDocRoot, '', $realDirPath));
+    ?>
+    <script>
+    omekaVars.themePath = "<?php echo $themePath ?>";
+    </script>
   </body>
 </html>

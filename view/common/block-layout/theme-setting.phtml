@@ -1,0 +1,18 @@
+<!-- template begin: common/block-layout/theme-setting -->
+<?php
+// variables transmises par le template common/block-layout/html
+$setting_id = $expression['setting_id'];
+$output = '';
+switch($setting_id) {
+  case 'enlum':
+    if ($this->themeSetting('enlum')) {
+      $output .= "<div class=\"cm-enlum has-text-centered py-2\">";
+      $output .= ("<img src=\"" . $this->themeSettingAssetUrl('enlum') . "\" alt=\"Enluminure\">");
+      $output .= "</div>";
+    }
+    break;
+  default:
+}
+echo $output;
+?>
+<!-- template end: common/block-layout/theme-setting -->

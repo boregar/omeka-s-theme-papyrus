@@ -14,9 +14,11 @@ $this->htmlElement('body')->appendAttribute('class', 'item-set resource browse')
 
 <div class="bulma-hero bulma-is-medium">
   <div class="bulma-hero-body">
+    <?php if ($this->themeSetting('enlum')): ?>
     <div class="cm-enlum has-text-centered py-2">
-      <img src="<?php echo $this->assetUrl('img/mrm-icon.png'); ?>" alt="MRM">
+      <img src="<?php echo $this->themeSettingAssetUrl('enlum'); ?>" alt="Enluminure">
     </div>
+    <?php endif; ?>
     <p class="bulma-subtitle has-text-centered">Découvrir nos</p>
     <p class="bulma-title has-text-centered"><?php echo $translate('Item sets'); ?></p>
     <div class="bulma-container bulma-is-max-tablet has-text-centered is-size-5">

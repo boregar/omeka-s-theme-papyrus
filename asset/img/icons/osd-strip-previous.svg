@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   id="Calque_2"
+   viewBox="0 0 24.000001 160"
+   version="1.1"
+   sodipodi:docname="osd-strip-previous.svg"
+   width="24"
+   height="160"
+   inkscape:version="1.3 (0e150ed, 2023-07-21)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:zoom="2.9369448"
+     inkscape:cx="71.502876"
+     inkscape:cy="81.717573"
+     inkscape:window-width="1464"
+     inkscape:window-height="449"
+     inkscape:window-x="0"
+     inkscape:window-y="25"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="Calque_2" />
+  <defs
+     id="defs1">
+    <style
+       id="style1">&#10;      .cls-1 {&#10;        fill: #1d5539;&#10;      }&#10;    </style>
+  </defs>
+  <g
+     id="Calque_1-2"
+     data-name="Calque_1"
+     transform="matrix(-1,0,0,1,17.8,65.8)"
+     style="fill:#ffffff">
+    <polygon
+       class="cls-1"
+       points="17.13,14.21 2.06,28.41 0,26.23 12.76,14.21 0,2.18 2.06,0 "
+       id="polygon1"
+       style="fill:#ffffff" />
+  </g>
+  <path
+     style="fill:none;stroke:#ffffff;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1"
+     d="M 23.5,0 V 160"
+     id="path1" />
+</svg>

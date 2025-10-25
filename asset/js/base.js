@@ -1,6 +1,7 @@
 //---------------------------------------- variables globales
 
 const omekaVars = {};       // contient les variables créées par les templates .phtml dans la zone backend > frontend
+const distUrl = 'https://dist.boregar.org';  // URL de l'hôte hébergeant les librairies et les polices
 
 var osdViewer = null;       // visionneuse OSD
 var lgViewer = null;        // visionneuse LightGallery
@@ -247,7 +248,7 @@ function osdView(tileSources) {
     osdViewer = OpenSeadragon({
       id: 'osdViewer',
       //preload: true,
-      prefixUrl: '/themes/boregar-papyrus/asset/libraries/openseadragon/images/',
+      prefixUrl: distUrl + '/libraries/openseadragon/images/',
       immediateRender: false,
       //toolbar: 'osdControls',
       autoHideControls: false,
@@ -287,10 +288,10 @@ function osdView(tileSources) {
 
     var closeButton = new OpenSeadragon.Button({
       tooltip: 'Close',
-      srcRest: '/themes/boregar-papyrus/asset/libraries/openseadragon/images/close_rest.png',
-      srcGroup: '/themes/boregar-papyrus/asset/libraries/openseadragon/images/close_grouphover.png',
-      srcHover: '/themes/boregar-papyrus/asset/libraries/openseadragon/images/close_hover.png',
-      srcDown: '/themes/boregar-papyrus/asset/libraries/openseadragon/images/close_pressed.png',
+      srcRest: distUrl + '/libraries/openseadragon/images/close_rest.png',
+      srcGroup: distUrl + '/libraries/openseadragon/images/close_grouphover.png',
+      srcDown: distUrl + '/libraries/openseadragon/images/close_pressed.png',
+      srcHover: distUrl + '/libraries/openseadragon/images/close_hover.png',
       onClick: osdClose
     });
     osdViewer.addControl(closeButton.element, {

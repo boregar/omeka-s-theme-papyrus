@@ -56,6 +56,14 @@ foreach ($expressions[1] as $key => $value) {
           $eval = $this->partial('common/block-layout/' . $block_id, ['expression' => $expression]);
         }
         break;
+      // variable du thème
+      case 'theme-setting':
+        // identifie le paramètre à rechercher
+        if (isset($expression['setting_id'])) {
+          // produit le HTML
+          $eval = $this->partial('common/block-layout/' . $block_id, ['expression' => $expression]);
+        }
+        break;
       default:
     }
     if ($eval) {

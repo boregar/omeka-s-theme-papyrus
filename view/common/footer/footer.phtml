@@ -8,7 +8,7 @@ $container = $nav->getContainer();
 
 <div class="bulma-section cm-footer-top cm-is-gris-dark">
   <div class="bulma-container">
-    <h2 class="has-text-centered is-size-2">Our world</h2>
+    <h2 class="has-text-centered is-size-2">Notre univers</h2>
   </div>
 </div>
 
@@ -16,31 +16,43 @@ $container = $nav->getContainer();
   <div class="bulma-container">
     <div class="bulma-columns has-text-centered">
       <div class="bulma-column">
-        <h4 class="cm-is-spaced mt-6 mb-3">Follow us</h4>
+        <h4 class="cm-is-spaced mt-6 mb-3">Nous suivre</h4>
         <ul class="cm-socials">
-          <li><i class="fab fa-youtube"></i></li>
-          <li><i class="fab fa-facebook-f"></i></li>
-          <li><i class="fab fa-instagram"></i></li>
-          <li><i class="fab fa-linkedin-in"></i></li>
-          <li><i class="fab fa-vimeo-v"></i></li>
+          <?php if ($socialsYoutube = $this->themeSetting('socials_youtube')): ?>
+          <li><a href="<?php echo $socialsYoutube ?>" target="_blank" title="Youtube"><i class="fab fa-youtube"></i></a></li>
+          <?php endif; ?>
+          <?php if ($socialsFacebook = $this->themeSetting('socials_facebook')): ?>
+          <li><a href="<?php echo $socialsFacebook ?>" target="_blank" title="Facebook"><i class="fab fa-facebook-f"></i></a></li>
+          <?php endif; ?>
+          <?php if ($socialsInstagram = $this->themeSetting('socials_instagram')): ?>
+          <li><a href="<?php echo $socialsInstagram ?>" target="_blank" title="Instagram"><i class="fab fa-instagram"></i></a></li>
+          <?php endif; ?>
+          <?php if ($socialsLinkedIn = $this->themeSetting('socials_linkedin')): ?>
+          <li><a href="<?php echo $socialsLinkedIn ?>" target="_blank" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a></li>
+          <?php endif; ?>
+          <?php if ($socialsVimeo = $this->themeSetting('socials_vimeo')): ?>
+          <li><a href="<?php echo $socialsVimeo ?>" target="_blank" title="Vimeo"><i class="fab fa-vimeo-v"></i></a></li>
+          <?php endif; ?>
         </ul>
-        <h4 class="cm-is-spaced mt-6 mb-3">Read us</h4>
+        <h4 class="cm-is-spaced mt-6 mb-3">Nous lire</h4>
         <?php echo $this->partial('common/forms/newsletter'); ?>
       </div>
       <div class="bulma-column">
-        <h4 class="cm-is-spaced mt-6 mb-3">Explore</h4>
+        <h4 class="cm-is-spaced mt-6 mb-3">Explorer</h4>
         <?php echo $this->partial('common/footer/footer-menu'); ?>
         <h4 class="cm-is-spaced mt-6 mb-3">Bonus</h4>
         <ul>
-          <li><a href="/notice">Notice</a></li>
-          <li><a href="/notice#thanks">Thanks</a></li>
+          <li><a href="/notice">Mentions légales</a></li>
+          <li><a href="/notice?a=merci">Remerciements</a></li>
         </ul>
       </div>
       <div class="bulma-column">
-        <h4 class="cm-is-spaced mt-6 mb-3">Find us</h4>
-        <p>Address #1<br/>Address #2</p>
-        <p><i class="fas fa-at"></i> email</p>
-        <p><i class="fas fa-phone"></i> phone</p>
+        <h4 class="cm-is-spaced mt-6 mb-3">Nous trouver</h4>
+        <?php echo $this->themeSetting('contact_address'); ?>
+        <p><i class="fas fa-at"></i> <?php echo $this->themeSetting('contact_email'); ?></p>
+        <p><i class="fas fa-phone"></i> <?php echo $this->themeSetting('contact_phone'); ?></p>
+        <h4 class="cm-is-spaced mt-6 mb-3">Réalisation</h4>
+        <?php echo $this->themeSetting('contact_credits'); ?>
       </div>
     </div>
   </div>
@@ -48,7 +60,7 @@ $container = $nav->getContainer();
 
 <div class="bulma-section cm-footer-bottom cm-is-gris-medium p-2">
   <div class="bulma-container">
-    <div class="has-text-centered">&copy; copyright</div>
+    <div class="has-text-centered"><?php echo $this->themeSetting('copyright'); ?></div>
   </div>
 </div>
 

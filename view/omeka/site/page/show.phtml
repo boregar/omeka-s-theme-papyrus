@@ -4,7 +4,15 @@ $this->headLink()->appendStylesheet($this->assetUrl('css/page-blocks.css', 'Omek
 $this->htmlElement('body')->appendAttribute('class', $pageBodyClass);
 $this->pageTitle($page->title(), 2);
 $nav = $site->publicNav();
+// CM begin
+// on doit ajouter les lignes ci-dessous si le module Clean URL est actif (cf https://forum.omeka.org/t/active-page-not-set-when-clean-url-is-active/28149)
+$thisPage = $nav->getContainer()->findOneBy('label', $page->title());
+if($thisPage !== null):
+  $thisPage->setActive(true);
+endif;
+// CM end
 $activePage = $nav->findActive($nav->getContainer());
+
 switch ($this->siteSetting('subnav_display')) {
     case 'show';
         $displaySubnav = $this->displayNavigation;

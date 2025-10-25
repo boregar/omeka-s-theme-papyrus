@@ -1,10 +1,5 @@
 <!-- template begin: omeka/site/item/browse -->
 <?php
-  include './themes/boregar-papyrus/asset/debug/kint.phar';
-  Kint::$depth_limit = 3;
-?>
-
-<?php
 $translate = $this->plugin('translate');
 $escape = $this->plugin('escapeHtml');
 $thumbnail = $this->plugin('thumbnail');
@@ -28,7 +23,7 @@ $siteSettings = $site->getServiceLocator()->get('Omeka\Settings\Site');
 $perPage = $query['per_page'] ?? ($siteSettings->get('pagination_per_page') ?? $globalSettings->get('pagination_per_page'));
 $sortBy = $query['sort_by'];
 $sortOrder = $query['sort_order'];
-$totalCount = $itemSet->itemCount();
+$totalCount = isset($itemSet) ? $itemSet->itemCount() : $this->api()->search('items', ['site_id' => $this->currentSite()->id(), 'limit' => 0])->getTotalResults();
 $pageCount = ceil($totalCount / $perPage);
 $currentPage = $query['page'] ?? 1;
 $offset = ($currentPage - 1) * $perPage;
@@ -38,9 +33,11 @@ $to = ($currentPage < $pageCount) ? $offset + $perPage : $totalCount;
 
 <div class="bulma-hero bulma-is-medium">
   <div class="bulma-hero-body">
+    <?php if ($this->themeSetting('enlum')): ?>
     <div class="cm-enlum has-text-centered py-2">
-      <img src="<?php echo $this->assetUrl('img/mrm-icon.png'); ?>" alt="MRM">
+      <img src="<?php echo $this->themeSettingAssetUrl('enlum'); ?>" alt="Enluminure">
     </div>
+    <?php endif; ?>
     <?php if ($itemSetShow): ?>
     <p class="bulma-subtitle has-text-centered"><?php echo $translate('Item set'); ?></p>
     <p class="bulma-title has-text-centered mb-1"><?php echo $itemSet->displayTitle(null, $valueLang); ?></p>
@@ -126,7 +123,6 @@ $to = ($currentPage < $pageCount) ? $offset + $perPage : $totalCount;
     <h4 class="row-count bulma-container has-text-centered cm-is-spaced"><?php echo sprintf($translate('Éléments') . ' ' . $translate('%1$s–%2$s of %3$s'), $from, $to, $totalCount); ?></h4>
   </div>
 </div>
-<?php echo ($itemSetShow) ? '</div>' : ''; ?>
 
 <?php $this->trigger('view.browse.before'); ?>
 <?php
