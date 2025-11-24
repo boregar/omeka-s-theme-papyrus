@@ -4,7 +4,7 @@ namespace OmekaTheme\Helper;
 use Laminas\View\Helper\AbstractHelper;
 
 class LinkPretty extends AbstractHelper {
-  public function __invoke($resource, $media = null, $imgSize = 'square', $linkToResource = true, $showAsCard = false) {
+  public function __invoke($resource, $media = null, $imgSize = 'square', $linkTo = 'resource', $showAsCard = false) {
     $view = $this->getView();
     // détermine la nature de la ressource (items, item_sets)
     $resourceType = $resource->resourceName();
@@ -23,11 +23,22 @@ class LinkPretty extends AbstractHelper {
     }
     if ($mediaType) {
       // identifie la cible du lien (resource ou media)
-      $target = $linkToResource ? $resource : ($media ?: $resource);
+      $target = null;
+      switch($linkTo) {
+        case 'resource':
+          $target = $resource;
+          break;
+        case 'media':
+          $target = ($media ?: $resource);
+          break;
+        default:
+          $target = null;
+      }
       switch($mediaType) {
         case 'docx':
         case 'xlsx':
         case 'pptx':
+        case 'pdf':
           if ($showAsCard) {
             if ($resourceType === 'item_sets') {
               $count = $resource->itemCount();
@@ -46,10 +57,12 @@ class LinkPretty extends AbstractHelper {
               $resource->displayTitle(),
               $content
             );
-            $linkPretty = $linkContent;
+            //$linkPretty = $linkContent;
+            $linkPretty = ($target ? $target->linkRaw($linkContent, null, ['class' => 'resource-link']) : sprintf('<a class="resource-link">%s</a>', $linkContent));
+
           } else {
             $linkContent = sprintf('<img src="%s" alt="Document %s"><span class="resource-name">%s</span>', $view->assetUrl('img/document-' . $mediaType . '.jpg'), $mediaType, $resource->displayTitle());
-            $linkPretty = $target->linkRaw($linkContent, null, ['class' => 'resource-link']);
+            $linkPretty = ($target ? $target->linkRaw($linkContent, null, ['class' => 'resource-link']) : sprintf('<a class="resource-link">%s</a>', $linkContent));
           }
           break;
         default:
@@ -69,13 +82,13 @@ class LinkPretty extends AbstractHelper {
                 <div class="bulma-content"><p>%s</p></div>
               </div>',
               $view->thumbnail($resource, $imgSize),
-              $target->linkRaw($resource->displayTitle(), null, ['class' => 'resource-link']),
+              $target ? $target->linkRaw($resource->displayTitle(), null, ['class' => 'resource-link']) : $resource->displayTitle(),
               $content
             );
             $linkPretty = $linkContent;
           } else {
             $linkContent = sprintf('%s<span class="resource-name">%s</span>', $view->thumbnail($media, $imgSize), $resource->displayTitle());
-            $linkPretty = $target->linkRaw($linkContent, null, ['class' => 'resource-link']);
+            $linkPretty = ($target ? $target->linkRaw($linkContent, null, ['class' => 'resource-link']) : sprintf('<a class="resource-link">%s</a>', $linkContent));
           }
       }
     } else {
@@ -96,13 +109,13 @@ class LinkPretty extends AbstractHelper {
           </div>',
           $view->assetUrl('img/document-' . $mediaType . '.jpg'),
           $mediaType,
-          $resource->linkRaw($resource->displayTitle(), null, ['class' => 'resource-link']),
+          $linkTo ? $resource->linkRaw($resource->displayTitle(), null, ['class' => 'resource-link']) : $resource->displayTitle(),
           $content
         );
         $linkPretty = $linkContent;
       } else {
         $linkContent = sprintf('<img src="%s" alt="Document %s"><span class="resource-name">%s</span>', $view->assetUrl('img/document-' . $mediaType . '.jpg'), $mediaType, $resource->displayTitle());
-        $linkPretty = $resource->linkRaw($linkContent, null, ['class' => 'resource-link']);
+        $linkPretty = ($linkTo ? $resource->linkRaw($linkContent, null, ['class' => 'resource-link']) : sprintf('<a class="resource-link">%s</a>', $linkContent));
       }
     }
     return '<!-- ' . $resourceType . ' -->' . $linkPretty;

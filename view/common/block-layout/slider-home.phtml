@@ -12,7 +12,7 @@ $items = $response->getContent();
   <li class="linked-resource cm-flk-cell" data-itemid="<?php echo $item->id(); ?>" data-ressourceclass="<?php echo $item->resourceClass() ? $item->resourceClass()->label() : 'Resource'; ?>">
     <div class="cm-item-media cm-is-rounded">
       <?php
-      echo $this->LinkPretty($item, null, 'large');
+      echo $this->LinkPretty($item, null, 'large', null, false);
       ?>
     </div>
     <div class="cm-item-content px-6">

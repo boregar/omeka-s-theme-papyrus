@@ -134,7 +134,7 @@ function addFlickityManager(flkBlock, flbEnable = false) {
     imagesLoaded: true,
     //wrapAround: (flkBlock.getAttribute('data-wraparound') === 'true'),
     freeScroll: (flkBlock.getAttribute('data-freescroll') === 'true'),
-    autoPlay: ((sPlay = flkBlock.getAttribute('data-autoplay')) && isNaN(iPlay = parseInt(sPlay))) ? true : iPlay,
+    autoPlay: ((sPlay = flkBlock.getAttribute('data-autoplay')) ? (isNaN(iPlay = parseInt(sPlay)) ? true : iPlay) : false),
     pauseAutoPlayOnHover: false,
     prevNextButtons: (flkBlock.getAttribute('data-prevnextbuttons') !== 'false'),
     draggable: (flkBlock.getAttribute('data-draggable') !== 'false'),
@@ -199,7 +199,7 @@ function addIsotopeManager(isotope, selector, sizer, origin, activate) {
   // clic sur un élément de la galerie
   if (activate) {
     isotope.addEventListener('click', function(event) {
-      var element = event.target.closest(selector);
+      /*var element = event.target.closest(selector);
       if (element.classList.contains('is-active')) {
         element.classList.remove('is-active');
       } else {
@@ -208,8 +208,13 @@ function addIsotopeManager(isotope, selector, sizer, origin, activate) {
       }
       isoGal.forEach((item, i) => {
         item.arrange();
-      });
-
+      });*/
+      if (!isotope.classList.contains('cm-view-grid')) {
+        return false;
+      }
+      var element = event.target.closest(selector);
+      element.classList.toggle('cm-iso-wide');
+      isoGal[0].arrange();
     });
   }
 }
@@ -376,7 +381,18 @@ function toggleViewMode(ctrlGroup, viewMode) {
   ctrlGroup.querySelector('button[data-setting="view-mode"].is-active')?.classList.remove('is-active');
   btnActive = ctrlGroup.querySelector('button[data-setting="view-mode"][data-value="' + viewMode + '"]');
   btnActive.classList.add('is-active');
-  // todo
+  if (isoBlock = document.querySelector('.cm-iso-block')) {
+    isoBlock.classList.forEach((item, i) => {
+      if (item.match(/cm-view-.+/)) {
+        isoBlock.classList.remove(item);
+      }
+    });
+    isoBlock.querySelectorAll('.cm-iso-wide').forEach((item, i) => {
+      item.classList.remove('cm-iso-wide');
+    });
+    isoBlock.classList.add('cm-view-' + viewMode);
+    isoGal[0].arrange();
+  }
   setCookie('MRMViewMode', viewMode, 30);
 }
 
@@ -411,7 +427,7 @@ function togglePerPage(ctrlGroup, perPage) {
 //---------------------------------------- positionne le classement
 
 function toggleSortBy(ctrlGroup, sortBy) {
-  if (!['star', 'rico:identifier', 'title', 'numeric:timestamp:674'].includes(sortBy)) {
+  if (!['star', 'id', 'rico:identifier', 'title', 'numeric:timestamp:674', 'random'].includes(sortBy)) {
     sortBy = 'rico:identifier';
   }
   ctrlGroup.querySelector('button[data-setting="sort-by"].is-active')?.classList.remove('is-active');
@@ -556,7 +572,7 @@ document.addEventListener('DOMContentLoaded', function () {
   // ajoute le gestionnaire de galerie isotope
   if (document.querySelector('.cm-iso-block')) {
     document.querySelectorAll('.cm-iso-block').forEach((item, i) => {
-      addIsotopeManager(item, 'li.cm-iso-cell', '25', 'left', false);
+      addIsotopeManager(item, 'li.cm-iso-cell', '25', 'left', true);
     });
   }
 

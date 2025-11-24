@@ -5,12 +5,11 @@ $escape = $this->plugin('escapeHtml');
 $thumbnail = $this->plugin('thumbnail');
 $api = $this->plugin('api');
 
-$query = $this->query;
+$query = $this->query;  //NB: toujours null --> si on en a vraiment besoin, trouver un moyen de la récupérer en utilisant $resources
 $heading = isset($this->heading) ? explode('|', $this->heading, 2) : null;
 $title = $heading ? (isset($heading[0]) ? $heading[0] : null) : null;
 $description = $heading ? (isset($heading[1]) ? $heading[1] : null) : null;
-$response = $api->search('items', $query);
-$totalResults = $response->getTotalResults();
+$totalResults = count($resources);
 
 if ($totalResults === 0) {
   echo '<pre>Aucun résultat</pre>';

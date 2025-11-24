@@ -20,10 +20,16 @@ endif;
 // ajoute des variables disponibles dans la pagination mais dont on a déjà besoin ici
 $globalSettings = $site->getServiceLocator()->get('Omeka\Settings');
 $siteSettings = $site->getServiceLocator()->get('Omeka\Settings\Site');
+// nb d'éléments par page
 $perPage = $query['per_page'] ?? ($siteSettings->get('pagination_per_page') ?? $globalSettings->get('pagination_per_page'));
+// paramètres de tri
 $sortBy = $query['sort_by'];
 $sortOrder = $query['sort_order'];
-$totalCount = isset($itemSet) ? $itemSet->itemCount() : $this->api()->search('items', ['site_id' => $this->currentSite()->id(), 'limit' => 0])->getTotalResults();
+// pour calculer le nombre total d'éléments, on recrée une query en retirant la limite éventuelle
+$totalQuery = $query;
+$totalQuery['limit'] = 0;
+$totalCount = isset($itemSet) ? $itemSet->itemCount() : $this->api()->search('items', $totalQuery)->getTotalResults();
+// informations sur la position courante dans les résultats
 $pageCount = ceil($totalCount / $perPage);
 $currentPage = $query['page'] ?? 1;
 $offset = ($currentPage - 1) * $perPage;
@@ -97,14 +103,20 @@ $to = ($currentPage < $pageCount) ? $offset + $perPage : $totalCount;
       <button class="button bulma-button" title="Classer par popularité" data-setting="sort-by" data-value="star">
         <span class="icon is-small"><i class="fas fa-star"></i></span>
       </button>
-      <button class="button bulma-button" title="Classer par identifiant" data-setting="sort-by" data-value="rico:identifier">
+      <button class="button bulma-button" title="Classer par identifiant" data-setting="sort-by" data-value="id">
         <span class="icon is-small">iD</span>
+      </button>
+      <button class="button bulma-button" title="Classer par cote" data-setting="sort-by" data-value="rico:identifier">
+        <span class="icon is-small"><i class="fas fa-barcode"></i></span>
       </button>
       <button class="button bulma-button" title="Classer par titre" data-setting="sort-by" data-value="title">
         <span>A</span><span style="font-size: smaller;">Z</span>
       </button>
       <button class="button bulma-button" title="Classer par date" data-setting="sort-by" data-value="numeric:timestamp:674">
         <span class="icon is-small"><i class="far fa-calendar"></i></span>
+      </button>
+      <button class="button bulma-button" title="Classer au hasard" data-setting="sort-by" data-value="random">
+        <span class="icon is-small"><i class="fas fa-dice"></i></span>
       </button>
       <div class="mx-1"></div>
       <button class="button bulma-button" title="Classer par ordre croissant" data-setting="sort-order" data-value="asc">

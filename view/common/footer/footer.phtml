@@ -6,13 +6,13 @@ $container = $nav->getContainer();
 //$page = $container->findOneBy('o:slug', 'et-quoniam-apud');
 ?>
 
-<div class="bulma-section cm-footer-top cm-is-gris-dark">
+<div class="bulma-section cm-footer-top cm-is-gris-dark pb-2">
   <div class="bulma-container">
     <h2 class="has-text-centered is-size-2">Notre univers</h2>
   </div>
 </div>
 
-<div class="bulma-section cm-footer-center cm-is-gris-doux pt-0">
+<div class="bulma-section cm-footer-center cm-is-gris-dark pt-0">
   <div class="bulma-container">
     <div class="bulma-columns has-text-centered">
       <div class="bulma-column">
@@ -58,10 +58,11 @@ $container = $nav->getContainer();
   </div>
 </div>
 
-<div class="bulma-section cm-footer-bottom cm-is-gris-medium p-2">
+<?php if ($copyright = $this->themeSetting('copyright')): ?>
+<div class="bulma-section cm-footer-bottom cm-is-gris-dark p-2">
   <div class="bulma-container">
-    <div class="has-text-centered"><?php echo $this->themeSetting('copyright'); ?></div>
+    <div class="has-text-centered"><?php echo $copyright; ?></div>
   </div>
 </div>
-
+<?php endif; ?>
 <!-- template end: common/footer/footer -->

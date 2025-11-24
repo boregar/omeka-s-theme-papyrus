@@ -17,7 +17,7 @@ $offsetEnd = $page * $perPage;
 $offsetEnd = ($offsetEnd > $totalResults) ? $totalResults : $offsetEnd;
 ?>
 
-<div class="preview-block bulma-section px-0 cm-is-gris-doux">
+<div class="preview-block bulma-section px-0">
   <div class="bulma-container">
     <ul class="resource-list preview cm-iso-block">
       <?php if ($title || $description): ?>
@@ -38,7 +38,7 @@ $offsetEnd = ($offsetEnd > $totalResults) ? $totalResults : $offsetEnd;
       <?php endif; ?>
       <?php foreach ($resources as $resource): ?>
       <li class="resource <?php echo $resource->resourceName(); ?> cm-iso-cell bulma-card">
-        <?php echo $this->LinkPretty($resource, null, 'large', true, true); ?>
+        <?php echo $this->LinkPretty($resource, null, 'large', 'resource', true); ?>
       </li>
       <?php endforeach; ?>
     </ul>
@@ -49,8 +49,8 @@ $offsetEnd = ($offsetEnd > $totalResults) ? $totalResults : $offsetEnd;
     <?php endif; ?>
     <?php if ($linkText): ?>
       <?php
-      //$linkMore = $this->hyperlink($linkText, $this->url('site/resource', ['controller' => $resourceType, 'action' => 'browse'], ['query' => $query], true));
-      $linkMore = $this->hyperlink($linkText, $this->url('site/resource', ['controller' => $resourceType, 'action' => 'browse'], null, true));
+      $linkMore = $this->hyperlink($linkText, $this->url('site/resource', ['controller' => $resourceType, 'action' => 'browse'], ['query' => $query], true));
+      //$linkMore = $this->hyperlink($linkText, $this->url('site/resource', ['controller' => $resourceType, 'action' => 'browse'], null, true));
        ?>
        <div class="bulma-content has-text-centered">
          <button type="submit" class="button bulma-button bulma-is-medium mt-5"><?php echo $linkMore; ?></button>
