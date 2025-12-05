@@ -9,7 +9,6 @@ $itemSetsPageLabel = $this->translate('Item Sets');
 $query = ['site_id' => 1, 'resource_class_label' => 'Collection', 'sort_by' => 'o:title'];
 $response = $this->api()->search('item_sets', $query);
 $itemSets = $response->getContent();
-
 // contruit le menu
 // les éléments du menu sont les "pages" d'un "container"
 // on parcourt récursivement le container et on crée le html au fur et à mesure en tenant compte des propriétés des pages

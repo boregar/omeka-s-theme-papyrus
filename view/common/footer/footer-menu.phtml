@@ -1,9 +1,11 @@
 <!-- template begin: common/footer/footer-menu -->
 <?php
+$translate = $this->plugin('translate');
+// si une page est privée, son label contient la traduction de '[Missing Page]' (cf fonction getLabel dans /application/src/Site/Navigation/Link/Page.php)
+$missingPageLabel = $this->translate('[Missing Page]');
 // contruit le menu
 // les éléments du menu sont les "pages" d'un "container"
 // on parcourt récursivement le container et on crée le html au fur et à mesure en tenant compte des propriétés des pages
-
 $container = $site->publicNav()->menu()->getContainer();
 $iter = new RecursiveIteratorIterator($container, RecursiveIteratorIterator::SELF_FIRST);
 $saveDepth = 0;
@@ -17,14 +19,17 @@ foreach ($iter as $page) {
   //$link = $site->publicNav()->menu()->htmlify($page);
   $href = $page->getHref();
   $label = $page->getLabel();
-  // élément de menu supérieur
-  if ($depth === 0) {
-    $html .= ('<li><a class="' . ($isActive ? 'is-active' : '') . '" href="' . $href . '">' . $label . '</a></li>');
+  // n'affiche pas la page si elle est privée
+  if ($label !== $missingPageLabel) {
+    // élément de menu supérieur
+    if ($depth === 0) {
+      $html .= ('<li><a class="' . ($isActive ? 'is-active' : '') . '" href="' . $href . '">' . $label . '</a></li>');
+    }
+    // élément enfant
+    else {
+    }
+    $saveDepth = $depth;
   }
-  // élément enfant
-  else {
-  }
-  $saveDepth = $depth;
   $i++;
 }
 $html .= '</ul>';
