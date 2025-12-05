@@ -35,144 +35,153 @@ $currentPage = $query['page'] ?? 1;
 $offset = ($currentPage - 1) * $perPage;
 $from = $offset + 1;
 $to = ($currentPage < $pageCount) ? $offset + $perPage : $totalCount;
+
+// set the background image of the page header
+if ($itemSetShow) {
+  $bgImageUrl = $itemSet->thumbnail()?->assetUrl() ?: ($itemSet->primaryMedia()?->thumbnailUrl('large') ?: $this->assetUrl('img/media-generic.jpg'));
+} else {
+  $bgImageUrl = $this->assetUrl('img/media-generic.jpg');
+}
 ?>
 
-<div class="bulma-hero bulma-is-medium">
-  <div class="bulma-hero-body">
-    <?php if ($this->themeSetting('enlum')): ?>
-    <div class="cm-enlum has-text-centered py-2">
-      <img src="<?php echo $this->themeSettingAssetUrl('enlum'); ?>" alt="Enluminure">
+<!-- build the page content with the same structure as for a site page -->
+
+<div class="blocks">
+  <div class="blocks-inner page-layout-normal" style="">
+    <div class="block block-blockGroup bulma-hero cm-page-header has-background cm-has-filter" style="background-image: url('<?php echo $this->assetUrl('img/filters/filtre-violet.png'); ?>'), url('<?php echo $bgImageUrl; ?>');">
+      <div class="block block-html bulma-hero-body">
+        <p class="bulma-subtitle has-text-centered"><?php echo $itemSetShow ? $translate('Item set') : 'Résultats de la'; ?></p>
+        <p class="bulma-title has-text-centered"><?php echo $itemSetShow ? $itemSet->displayTitle(null, $valueLang) : 'sélection'; ?></p>
+        <h4 class="has-text-centered cm-is-spaced mb-5"><?php echo ($totalCount > 0) ? '<i class="fas fa-images"></i> ' . $totalCount . ' ' . $translate('Items') : '<i class="fas fa-eye-slash"></i> Aucun élément'; ?></h4>
+      </div>
     </div>
-    <?php endif; ?>
-    <?php if ($itemSetShow): ?>
-    <p class="bulma-subtitle has-text-centered"><?php echo $translate('Item set'); ?></p>
-    <p class="bulma-title has-text-centered mb-1"><?php echo $itemSet->displayTitle(null, $valueLang); ?></p>
-    <?php $count = $itemSet->itemCount(); ?>
-    <h4 class="has-text-centered cm-is-spaced mb-5"><?php echo ($count > 0) ? '<i class="fas fa-images"></i> ' . $count . ' ' . $translate('Items') : '<i class="fas fa-eye-slash"></i> Aucun élément'; ?></h4>
-    <div class="bulma-container bulma-is-max-tablet has-text-centered is-size-5">
-      <p><?php echo $itemSet->displayDescription(null, $valueLang); ?></p>
+    <div class="block block-blockGroup bulma-section">
+      <div class="block block-html">
+      <?php if ($itemSetShow): ?>
+        <div class="bulma-container bulma-is-max-tablet has-text-centered is-size-5">
+          <div class="bulma-container bulma-is-max-tablet has-text-centered is-size-5 mb-6"><?php echo $itemSet->displayDescription(null, $valueLang); ?></div>
+        </div>
+      <?php else: ?>
+        <?php echo $this->searchFilters(); ?>
+      <?php endif; ?>
+      </div>
     </div>
-    <!-- <div class="metadata"><?php //echo $this->resourcePageBlocks($itemSet)->getBlocks(); ?></div> -->
-    <?php else: ?>
-      <p><?php echo $escape($translate('Items')); ?></p>
-    <?php endif; ?>
+    <div class="cm-search-header browse-controls bulma-section px-0 cm-is-gris-doux">
+      <div class="bulma-container bulma-columns p-4">
+        <div class="cm-search-layout bulma-column bulma-buttons bulma-has-addons is-flex bulma-is-centered mb-0">
+          <button class="button bulma-button" title="Vue en liste" data-setting="view-mode" data-value="list">
+            <span class="icon is-small">
+              <i class="fa-solid fa-list"></i>
+            </span>
+          </button>
+          <button class="button bulma-button" title="Vue en cartes" data-setting="view-mode" data-value="cards">
+            <span class="icon is-small">
+              <i class="fa-solid fa-table-cells-large"></i>
+            </span>
+          </button>
+          <button class="button bulma-button" title="Vue en grille" data-setting="view-mode" data-value="grid">
+            <span class="icon is-small">
+              <i class="fa-solid fa-table-cells"></i>
+            </span>
+          </button>
+          <div class="mx-1"></div>
+          <button class="button bulma-button" title="12 éléments par page" data-setting="per-page" data-value="12">
+            <span class="icon is-small">
+              ×12
+            </span>
+          </button>
+          <button class="button bulma-button" title="24 éléments par page" data-setting="per-page" data-value="24">
+            <span class="icon is-small">
+              ×24
+            </span>
+          </button>
+          <button class="button bulma-button" title="48 éléments par page" data-setting="per-page" data-value="48">
+            <span class="icon is-small">
+              ×48
+            </span>
+          </button>
+        </div>
+        <div class="cm-search-pagination bulma-column">
+          <?php echo $this->pagination(); ?>
+        </div>
+        <div class="cm-search-sort bulma-column bulma-buttons bulma-has-addons is-flex bulma-is-centered mb-0">
+          <button class="button bulma-button" title="Classer par popularité" data-setting="sort-by" data-value="star">
+            <span class="icon is-small"><i class="fas fa-star"></i></span>
+          </button>
+          <button class="button bulma-button" title="Classer par identifiant" data-setting="sort-by" data-value="id">
+            <span class="icon is-small">iD</span>
+          </button>
+          <button class="button bulma-button" title="Classer par cote" data-setting="sort-by" data-value="rico:identifier">
+            <span class="icon is-small"><i class="fas fa-barcode"></i></span>
+          </button>
+          <button class="button bulma-button" title="Classer par titre" data-setting="sort-by" data-value="title">
+            <span>A</span><span style="font-size: smaller;">Z</span>
+          </button>
+          <button class="button bulma-button" title="Classer par date" data-setting="sort-by" data-value="numeric:timestamp:674">
+            <span class="icon is-small"><i class="far fa-calendar"></i></span>
+          </button>
+          <button class="button bulma-button" title="Classer au hasard" data-setting="sort-by" data-value="random">
+            <span class="icon is-small"><i class="fas fa-dice"></i></span>
+          </button>
+          <div class="mx-1"></div>
+          <button class="button bulma-button" title="Classer par ordre croissant" data-setting="sort-order" data-value="asc">
+            <span class="icon is-small"><i class="fas fa-sort-up"></i></span>
+          </button>
+          <button class="button bulma-button" title="Classer par ordre décroissant" data-setting="sort-order" data-value="desc">
+            <span class="icon is-small"><i class="fas fa-sort-down"></i></span>
+          </button>
+          <div class="mx-1"></div>
+          <button class="button bulma-button" title="Recherche avancée" data-setting="link" data-value="<?php echo $this->url('site/resource', ['controller' => 'item', 'action' => 'search'], ['query' => $query], true); ?>">
+            <a href="<?php echo $this->url('site/resource', ['controller' => 'item', 'action' => 'search'], ['query' => $query], true); ?>"><span class="icon is-small"><i class="fas fa-sliders-h"></i></span></a>
+          </button>
+        </div>
+      </div>
+      <div class="cm-search-filters bulma-container p-4">
+        <h4 class="row-count bulma-container has-text-centered cm-is-spaced"><?php echo sprintf($translate('Éléments') . ' ' . $translate('%1$s–%2$s of %3$s'), $from, $to, $totalCount); ?></h4>
+      </div>
+    </div>
+    <?php $this->trigger('view.browse.before');?>
+    <?php
+    $headingTerm = $this->siteSetting('browse_heading_property_term');
+    $bodyTerm = $this->siteSetting('browse_body_property_term');
+    // alimente la structure de navigation
+    $itemNav = [];      // structure de navigation des items
+    $itemSave = null;   // stocke l'id de l'item en cours
+    foreach ($items as $item) {
+      //$itemId = $item->value('dcterms:identifier');
+      $itemId = $item->id();
+      $itemNav[$itemId] = ['itemPrev' => $itemSave, 'itemNext' => null];
+      if ($itemSave) {
+        $itemNav[$itemSave]['itemNext'] = $itemId;
+      }
+      $itemSave = $itemId;
+    }
+    // stocke la structure de navigation dans une variable de session --> utilisée dans le template item/show.phtml
+    $_SESSION['itemNav'] = $itemNav;
+    // stocke l'id de la collection en cours ssi elle est définie
+    if (isset($itemSet)) {
+      $_SESSION['itemSet'] = $itemSet->id();
+    }
+    ?>
+    <div class="block block-blockGroup bulma-section cm-is-gris-doux p-0">
+      <div class="bulma-container">
+        <?php // add item
+        echo $this->partial('common/block-layout/browse-cards', [
+          'resources' => $items,
+          'query' => $query
+        ]);
+        ?>
+      </div>
+    </div>
+    <?php $this->trigger('view.browse.after'); ?>
+    <div class="browse-controls bulma-section px-0 cm-is-gris-doux">
+    <?php echo $this->pagination(); ?>
+    </div>
   </div>
-</div>
-
-<?php echo $this->searchFilters(); ?>
-
-<div class="cm-search-header browse-controls bulma-section px-0 cm-is-gris-doux">
-  <div class="bulma-container bulma-columns p-4">
-    <div class="cm-search-layout bulma-column bulma-buttons bulma-has-addons is-flex bulma-is-centered mb-0">
-      <button class="button bulma-button" title="Vue en liste" data-setting="view-mode" data-value="list">
-        <span class="icon is-small">
-          <i class="fa-solid fa-list"></i>
-        </span>
-      </button>
-      <button class="button bulma-button" title="Vue en cartes" data-setting="view-mode" data-value="cards">
-        <span class="icon is-small">
-          <i class="fa-solid fa-table-cells-large"></i>
-        </span>
-      </button>
-      <button class="button bulma-button" title="Vue en grille" data-setting="view-mode" data-value="grid">
-        <span class="icon is-small">
-          <i class="fa-solid fa-table-cells"></i>
-        </span>
-      </button>
-      <div class="mx-1"></div>
-      <button class="button bulma-button" title="12 éléments par page" data-setting="per-page" data-value="12">
-        <span class="icon is-small">
-          ×12
-        </span>
-      </button>
-      <button class="button bulma-button" title="24 éléments par page" data-setting="per-page" data-value="24">
-        <span class="icon is-small">
-          ×24
-        </span>
-      </button>
-      <button class="button bulma-button" title="48 éléments par page" data-setting="per-page" data-value="48">
-        <span class="icon is-small">
-          ×48
-        </span>
-      </button>
-    </div>
-    <div class="cm-search-pagination bulma-column">
-      <?php echo $this->pagination(); ?>
-    </div>
-    <div class="cm-search-sort bulma-column bulma-buttons bulma-has-addons is-flex bulma-is-centered mb-0">
-      <button class="button bulma-button" title="Classer par popularité" data-setting="sort-by" data-value="star">
-        <span class="icon is-small"><i class="fas fa-star"></i></span>
-      </button>
-      <button class="button bulma-button" title="Classer par identifiant" data-setting="sort-by" data-value="id">
-        <span class="icon is-small">iD</span>
-      </button>
-      <button class="button bulma-button" title="Classer par cote" data-setting="sort-by" data-value="rico:identifier">
-        <span class="icon is-small"><i class="fas fa-barcode"></i></span>
-      </button>
-      <button class="button bulma-button" title="Classer par titre" data-setting="sort-by" data-value="title">
-        <span>A</span><span style="font-size: smaller;">Z</span>
-      </button>
-      <button class="button bulma-button" title="Classer par date" data-setting="sort-by" data-value="numeric:timestamp:674">
-        <span class="icon is-small"><i class="far fa-calendar"></i></span>
-      </button>
-      <button class="button bulma-button" title="Classer au hasard" data-setting="sort-by" data-value="random">
-        <span class="icon is-small"><i class="fas fa-dice"></i></span>
-      </button>
-      <div class="mx-1"></div>
-      <button class="button bulma-button" title="Classer par ordre croissant" data-setting="sort-order" data-value="asc">
-        <span class="icon is-small"><i class="fas fa-sort-up"></i></span>
-      </button>
-      <button class="button bulma-button" title="Classer par ordre décroissant" data-setting="sort-order" data-value="desc">
-        <span class="icon is-small"><i class="fas fa-sort-down"></i></span>
-      </button>
-      <div class="mx-1"></div>
-      <button class="button bulma-button" title="Recherche avancée" data-setting="link" data-value="<?php echo $this->url('site/resource', ['controller' => 'item', 'action' => 'search'], ['query' => $query], true); ?>">
-        <a href="<?php echo $this->url('site/resource', ['controller' => 'item', 'action' => 'search'], ['query' => $query], true); ?>"><span class="icon is-small"><i class="fas fa-sliders-h"></i></span></a>
-      </button>
-    </div>
-  </div>
-  <div class="cm-search-filters bulma-container p-4">
-    <h4 class="row-count bulma-container has-text-centered cm-is-spaced"><?php echo sprintf($translate('Éléments') . ' ' . $translate('%1$s–%2$s of %3$s'), $from, $to, $totalCount); ?></h4>
-  </div>
-</div>
-
-<?php $this->trigger('view.browse.before'); ?>
-<?php
-$headingTerm = $this->siteSetting('browse_heading_property_term');
-$bodyTerm = $this->siteSetting('browse_body_property_term');
-
-// alimente la structure de navigation
-$itemNav = [];      // structure de navigation des items
-$itemSave = null;   // stocke l'id de l'item en cours
-foreach ($items as $item) {
-  //$itemId = $item->value('dcterms:identifier');
-  $itemId = $item->id();
-  $itemNav[$itemId] = ['itemPrev' => $itemSave, 'itemNext' => null];
-  if ($itemSave) {
-    $itemNav[$itemSave]['itemNext'] = $itemId;
-  }
-  $itemSave = $itemId;
-}
-// stocke la structure de navigation dans une variable de session --> utilisée dans le template item/show.phtml
-$_SESSION['itemNav'] = $itemNav;
-// stocke l'id de la collection en cours ssi elle est définie
-if (isset($itemSet)) {
-  $_SESSION['itemSet'] = $itemSet->id();
-}
-
-// affiche les items
-echo $this->partial('common/block-layout/browse-cards', [
-  'resources' => $items,
-  'query' => $query
-]);
-?>
-
-<?php $this->trigger('view.browse.after'); ?>
-<div class="browse-controls bulma-section px-0 cm-is-gris-doux">
-<?php echo $this->pagination(); ?>
 </div>
 
 <!-- backend > frontend -->
+
 <script>
 omekaVars.perPage = "<?php echo $perPage; ?>";
 omekaVars.sortBy = "<?php echo $sortBy; ?>";

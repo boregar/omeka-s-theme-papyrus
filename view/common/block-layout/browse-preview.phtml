@@ -24,6 +24,12 @@ if ($class) {
   if (in_array('browse-flk', $blockClasses)) {
     $partial = 'browse-flk';
   }
+  elseif (in_array('browse-blog', $blockClasses)) {
+    $partial = 'browse-blog';
+  }
+  elseif (in_array('browse-hcards', $blockClasses)) {
+    $partial = 'browse-hcards';
+  }
 }
 
 echo $this->partial('common/block-layout/' . $partial, [
@@ -34,7 +40,8 @@ echo $this->partial('common/block-layout/' . $partial, [
   'description' => $description,
   'totalResults' => $totalResults,
   'linkText' => $linkText,
-  'pagination' => $this->pagination()
+  'pagination' => $this->pagination(),
+  'lightBox' => $class ? in_array('browse-lightbox', $blockClasses) : null
 ]);
 ?>
 <!-- template end: common/block-layout/browse-preview -->

@@ -107,14 +107,14 @@ class LinkPretty extends AbstractHelper {
             <div class="cm-item-title bulma-title is-size-6"><h3 class="resource-name">%s</h3></div>
             <div class="bulma-content"><p>%s</p></div>
           </div>',
-          $view->assetUrl('img/document-' . $mediaType . '.jpg'),
+          $view->assetUrl('img/media-' . $mediaType . '.jpg'),
           $mediaType,
           $linkTo ? $resource->linkRaw($resource->displayTitle(), null, ['class' => 'resource-link']) : $resource->displayTitle(),
           $content
         );
         $linkPretty = $linkContent;
       } else {
-        $linkContent = sprintf('<img src="%s" alt="Document %s"><span class="resource-name">%s</span>', $view->assetUrl('img/document-' . $mediaType . '.jpg'), $mediaType, $resource->displayTitle());
+        $linkContent = sprintf('<img src="%s" alt="Document %s"><span class="resource-name">%s</span>', $view->assetUrl('img/media-' . $mediaType . '.jpg'), $mediaType, $resource->displayTitle());
         $linkPretty = ($linkTo ? $resource->linkRaw($linkContent, null, ['class' => 'resource-link']) : sprintf('<a class="resource-link">%s</a>', $linkContent));
       }
     }

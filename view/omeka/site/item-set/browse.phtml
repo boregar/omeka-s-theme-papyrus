@@ -10,32 +10,42 @@ $valueLang = $filterLocale ? [$lang, ''] : null;
 $query = $this->params()->fromQuery();
 
 $this->htmlElement('body')->appendAttribute('class', 'item-set resource browse');
+
+// get the background image of the page header if set in the theme settings
+$bgImageUrl = $this->themeSettingAssetUrl('item_sets_background') ?: $this->assetUrl('img/media-generic.jpg');
+
 ?>
 
-<div class="bulma-hero bulma-is-medium">
-  <div class="bulma-hero-body">
-    <?php if ($this->themeSetting('enlum')): ?>
-    <div class="cm-enlum has-text-centered py-2">
-      <img src="<?php echo $this->themeSettingAssetUrl('enlum'); ?>" alt="Enluminure">
+<!-- build the page content with the same structure as for a site page -->
+
+<div class="blocks">
+  <div class="blocks-inner page-layout-normal" style="">
+    <div class="block block-blockGroup bulma-hero cm-page-header cm-is-dark-block has-background" style="background-image: url('<?php echo $bgImageUrl; ?>');">
+      <div class="block block-html bulma-hero-body">
+        <p class="bulma-subtitle has-text-centered">Découvrez nos</p>
+        <p class="bulma-title has-text-centered"><?php echo $translate('Item sets'); ?></p>
+      </div>
     </div>
-    <?php endif; ?>
-    <p class="bulma-subtitle has-text-centered">Découvrir nos</p>
-    <p class="bulma-title has-text-centered"><?php echo $translate('Item sets'); ?></p>
-    <div class="bulma-container bulma-is-max-tablet has-text-centered is-size-5">
-      <p>Gravures, estampes, objets culturels… Nos collections regorgent de trésors qui éclairent la personnalité de Jean-Jacques Rousseau.</p>
-      <p>Iam virtutem ex consuetudine vitae sermonisque nostri interpretemur nec eam, ut quidam docti, verborum magnificentia metiamur virosque bonos eos, qui habentur, numeremus, Paulos, Catones, Galos, Scipiones, Philos; his communis vita contenta est; eos autem omittamus, qui omnino nusquam reperiuntur.</p>
+    <div class="block block-blockGroup bulma-section">
+      <div class="block block-html">
+        <div class="bulma-container bulma-is-max-tablet has-text-centered is-size-5">
+          <div class="bulma-container bulma-is-max-tablet has-text-centered is-size-5 mb-6"><?php echo $this->themeSetting('item_sets_chapo'); ?></div>
+        </div>
+        <p class="bulma-container bulma-is-max-desktop has-text-centered"><?php echo $this->themeSetting('item_sets_description'); ?></p>
+      </div>
     </div>
+    <?php $this->trigger('view.browse.before');?>
+    <div class="block block-blockGroup bulma-section">
+      <div class="bulma-container bulma-is-max-desktop cm-has-color-violet">
+        <?php // add item sets
+        echo $this->partial('common/block-layout/browse-twinsets', [
+          'resources' => $itemSets,
+          'query' => $query
+        ]);
+        ?>
+      </div>
+    </div>
+    <?php $this->trigger('view.browse.after'); ?>
   </div>
 </div>
-
-<?php $this->trigger('view.browse.before');?>
-
-<?php // affiche les items
-echo $this->partial('common/block-layout/browse-cards', [
-  'resources' => $itemSets,
-  'query' => $query
-]);
-?>
-
-<?php $this->trigger('view.browse.after'); ?>
 <!-- template end: omeka/site/item-set/browse -->

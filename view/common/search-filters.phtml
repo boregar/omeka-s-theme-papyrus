@@ -1,0 +1,17 @@
+<!-- template begin: common/search-filters -->
+<?php $escape = $this->plugin('escapeHtml'); ?>
+<?php if (count($filters) > 0): ?>
+<div class="search-filters cm-properties bulma-container bulma-is-max-desktop p-6">
+    <?php foreach ($filters as $filterLabel => $filterValues): ?>
+    <dl class="filter">
+      <div class="property">
+        <dt><?php echo $escape($filterLabel); ?></dt>
+        <?php foreach ($filterValues as $filterValue): ?>
+        <dd class="value"><?php echo $escape($filterValue); ?></dd>
+        <?php endforeach; ?>
+      </div>
+    </dl>
+    <?php endforeach; ?>
+</div>
+<?php endif; ?>
+<!-- template begin: common/search-filters -->

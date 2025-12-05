@@ -47,9 +47,9 @@ foreach ($expressions[1] as $key => $value) {
     $block_id = $expression['block_id'];
     switch($block_id) {
       // block du slider de la page d'accueil
-      case 'slider-home':
+      case 'html-slider-home':
       // block de galerie isotope
-      case 'iso-cards':
+      case 'html-iso-cards':
         // une requête de recherche est nécessaire pour sélectionner les items
         if (isset($expression['block_search'])) {
           // produit le HTML
@@ -57,7 +57,7 @@ foreach ($expressions[1] as $key => $value) {
         }
         break;
       // variable du thème
-      case 'theme-setting':
+      case 'html-theme-setting':
         // identifie le paramètre à rechercher
         if (isset($expression['setting_id'])) {
           // produit le HTML

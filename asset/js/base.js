@@ -124,7 +124,7 @@ function addBurgerManager(burgerClass) {
 
 //---------------------------------------- gestionnaire de galerie flickity
 
-function addFlickityManager(flkBlock, flbEnable = false) {
+function addFlickityManager(flkBlock) {
   // calcule le nombre de points à afficher en-dessous de la galerie
   var nGroupCells = Math.ceil(flkBlock.querySelectorAll('.cm-flk-cell').length / (32 * flkBlock.offsetWidth / 1088));
   // crée un carousel flickity
@@ -139,7 +139,8 @@ function addFlickityManager(flkBlock, flbEnable = false) {
     prevNextButtons: (flkBlock.getAttribute('data-prevnextbuttons') !== 'false'),
     draggable: (flkBlock.getAttribute('data-draggable') !== 'false'),
     fade: (flkBlock.getAttribute('data-fade') === 'true'),
-    groupCells: nGroupCells
+    groupCells: nGroupCells,
+    initialIndex: '.cm-is-initial'
   });
   // relance le player de la page d'accueil s'il est stoppé par un clic
   if (flkBlock.classList.contains('slider-home')) {
@@ -149,7 +150,7 @@ function addFlickityManager(flkBlock, flbEnable = false) {
     });
   }
   // crée une galerie FsLightbox
-  if (flbEnable) {
+  if (flkBlock.getAttribute('data-lightbox') === 'true') {
     // crée un identifiant unique pour la galerie fslightbox
     var idGal = Math.floor(Math.random() * 1000);
     flkBlock.querySelectorAll('a').forEach((item, i) => {
@@ -169,10 +170,10 @@ function addFlickityManager(flkBlock, flbEnable = false) {
       */
       // associe chaque image du carousel à la galerie
       item.setAttribute('data-fslightbox', 'gal-flk-' + idGal);
-      // ajoute la référence à l'image originale d'après celle de la miniature
-      item.setAttribute('href', item.querySelector('img')?.getAttribute('src').replace('/files/medium/', '/files/original/'));
+      // ajoute la référence à l'image "large" d'après celle de la miniature (et non au fichier original car il peut s'agir d'un PDF ou autre)
+      item.setAttribute('href', item.querySelector('img')?.getAttribute('src').replace(/\/files\/(square|medium)\//, '/files/large/'));
       // ajoute la légende
-      item.setAttribute('data-caption', item.querySelector('.resource-name').innerText);
+      item.setAttribute('data-caption', item.querySelector('img')?.getAttribute('alt'));
     });
     // met à jour la galerie
     refreshFsLightbox();

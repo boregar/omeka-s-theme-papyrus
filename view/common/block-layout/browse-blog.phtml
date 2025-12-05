@@ -1,0 +1,74 @@
+<!-- template begin: common/block-layout/browse-blog -->
+<?php
+$escape = $this->plugin('escapeHtml');
+
+$title = isset($title) ? $title : null;
+$description = isset($description) ? $description : null;
+$pagination = isset($pagination) ? $pagination : null;
+$linkText = isset($linkText) ? $linkText : null;
+$resourceType = isset($resourceType) ? $resourceType : null;
+$totalResults = (isset($totalResults) && $totalResults) ? $totalResults : count($resources);
+$page = isset($query['page']) ? $query['page'] : 1;
+$perPage = isset($query['per_page']) ? $query['per_page'] : $totalResults;
+$limit = isset($query['limit']) ? $query['limit'] : 12;
+$more = (($page * $perPage) >= $limit);
+$offsetStart = ($page - 1) * $perPage + 1;
+$offsetEnd = $page * $perPage;
+$offsetEnd = ($offsetEnd > $totalResults) ? $totalResults : $offsetEnd;
+?>
+
+<div class="preview-block bulma-section px-0">
+  <div class="bulma-container bulma-is-max-tablet">
+    <ul class="resource-list preview">
+      <?php foreach ($resources as $resource): ?>
+      <li class="resource bulma-media bulma-box my-5 p-0">
+        <figure class="bulma-media-left">
+          <div class="bulma-image">
+          <?php
+            $thumbnail = $this->thumbnail($resource, 'medium');
+            echo $thumbnail ?: sprintf('<img src="%s" alt="%s">', $this->assetUrl('img/media-generic.jpg'), $resource->resourceName());
+          ?>
+          </div>
+        </figure>
+        <div class="bulma-media-content p-4">
+          <div class="bulma-content">
+            <div class="cm-item-date bulma-title is-size-6 mb-2"><?php echo $resource->value('dcterms:date')->value(); ?></div>
+            <div class="cm-item-title bulma-title is-size-6">
+              <h6 class="resource-name"><?php echo $resource->linkRaw($resource->displayTitle(), null, ['class' => 'resource-link']); ?></h6>
+            </div>
+            <?php
+            $description = $resource->displayDescription();
+            if (strlen($description) > 180) {
+              $description = substr($description, 0, 180) . '…';
+            }
+            ?>
+            <p><?php echo $description; ?></p>
+          </div>
+          <nav class="level mt-5">
+            <div class="level-left">
+              <div class="level-item">
+                <?php echo $this->ResourceClassIcon($resource); ?>
+              </div>
+            </div>
+          </nav>
+        </div>
+      </li>
+      <?php endforeach; ?>
+    </ul>
+    <?php if ($pagination): ?>
+    <div class="browse-controls">
+      <?php echo $pagination; ?>
+    </div>
+    <?php endif; ?>
+    <?php if ($linkText): ?>
+      <?php
+      $linkMore = $this->hyperlink($linkText, $this->url('site/resource', ['controller' => $resourceType, 'action' => 'browse'], ['query' => $query], true));
+      //$linkMore = $this->hyperlink($linkText, $this->url('site/resource', ['controller' => $resourceType, 'action' => 'browse'], null, true));
+       ?>
+       <div class="bulma-content has-text-centered">
+         <button type="submit" class="button bulma-button bulma-is-medium mt-5"><?php echo $linkMore; ?></button>
+       </div>
+    <?php endif; ?>
+  </div>
+</div>
+<!-- template end: common/block-layout/browse-blog -->

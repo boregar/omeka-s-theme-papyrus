@@ -1,8 +1,14 @@
 <!-- template begin: navigation/menu -->
 <?php
-// si une page est privée, son label contient la traduction de '[Missing Page]' (cf fonction getLabel dans /application/src/Site/Navigation/Link/Page.php)
 $translate = $this->plugin('translate');
+// si une page est privée, son label contient la traduction de '[Missing Page]' (cf fonction getLabel dans /application/src/Site/Navigation/Link/Page.php)
 $missingPageLabel = $this->translate('[Missing Page]');
+// store the label for the item sets page so we can add the item sets as submenu entries
+$itemSetsPageLabel = $this->translate('Item Sets');
+// get the item sets
+$query = ['site_id' => 1, 'resource_class_label' => 'Collection', 'sort_by' => 'o:title'];
+$response = $this->api()->search('item_sets', $query);
+$itemSets = $response->getContent();
 
 // contruit le menu
 // les éléments du menu sont les "pages" d'un "container"
@@ -28,8 +34,22 @@ foreach ($iter as $page) {
       if ($depth !== $saveDepth) {
         $html .= '</div></div>';
       }
-      $html .= ('<div class="bulma-navbar-item' . ($hasChildren ? ' bulma-has-dropdown bulma-is-hoverable">' : '">'));
-      $html .= ('<a class="bulma-navbar-link' . ($hasChildren ? '' : ' bulma-is-arrowless') . ($isActive ? ' is-active' : '') . '" href="' . $href . '">' . $label . '</a>' . ($hasChildren ? '<div class="bulma-navbar-dropdown bulma-is-right">' : '</div>'));
+      // si on est dans le menu "Collections", ajoute les collections comme enfants
+      if ($label === $itemSetsPageLabel) {
+        if (count($itemSets)) {
+          $html .= '<div class="bulma-navbar-item bulma-has-dropdown bulma-is-hoverable">';
+          $html .= ('<a class="bulma-navbar-link' . ($isActive ? ' is-active' : '') . '" href="' . $href . '">' . $label . '</a><div class="bulma-navbar-dropdown bulma-is-right">');
+          foreach($itemSets as $itemSet) {
+            $html .= ('<a class="bulma-navbar-item' . ($isActive ? ' is-active' : '') . '" href="' . $itemSet->url() . '">' . $itemSet->displayTitle() . '</a>');
+          }
+          $html .= '<hr class="bulma-navbar-divider">';
+        }
+      }
+      // menu autre que "Collections"
+      else {
+        $html .= ('<div class="bulma-navbar-item' . ($hasChildren ? ' bulma-has-dropdown bulma-is-hoverable">' : '">'));
+        $html .= ('<a class="bulma-navbar-link' . ($hasChildren ? '' : ' bulma-is-arrowless') . ($isActive ? ' is-active' : '') . '" href="' . $href . '">' . $label . '</a>' . ($hasChildren ? '<div class="bulma-navbar-dropdown bulma-is-right">' : '</div>'));
+      }
     }
     // élément enfant
     else {

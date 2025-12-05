@@ -1,0 +1,42 @@
+<!-- template begin: common/block-layout/browse-twinsets -->
+<?php
+$escape = $this->plugin('escapeHtml');
+?>
+
+<div class="preview-block bulma-section px-0 pt-0">
+  <div class="bulma-container">
+    <ul class="resource-list preview cm-twinset-block">
+      <?php foreach ($resources as $itemSet): ?>
+        <li class="resource item-set mb-6 p-0 pb-6">
+          <div class="cm-twinset-data">
+            <div class="cm-item-title bulma-title is-size-4 mb-2"><h3 class="resource-name"><?php echo $itemSet->linkRaw($itemSet->displayTitle(), null, ['class' => 'resource-link']); ?></h3></div>
+            <?php
+            $query = ['item_set_id' => $itemSet->id(), 'has_media' => true, 'sort_by' => 'random', 'per_page' => 6, 'page' => 0];
+            $response = $this->api()->search('items', $query);
+            $totalResults = $response->getTotalResults();
+            $items = $response->getContent();
+            ?>
+            <div class="mb-4"><?php echo $totalResults > 0 ? '<i class="fas fa-images"></i> ' . $totalResults . ' éléments' : '<i class="fas fa-eye-slash"></i> Aucun élément'; ?></div>
+            <?php
+            $description = $itemSet->displayDescription();
+            if (strlen($description) > 180) {
+              $description = substr($description, 0, 180) . '…';
+            }
+            ?>
+            <div class="mt-4"><span><?php echo $description ?></span><span><?php echo $itemSet->linkRaw(' (suite)', null, ['class' => 'resource-link']); ?></span></div>
+          </div>
+          <div class="cm-twinset-media">
+            <ul class="resource-list preview cm-iso-block cm-view-twinset">
+            <?php foreach ($items as $item): ?>
+              <li class="resource item cm-iso-cell bulma-card">
+                <?php echo $this->LinkPretty($item, null, 'medium', 'resource', true); ?>
+              </li>
+            <?php endforeach; ?>
+            </ul>
+          </div>
+        </li>
+      <?php endforeach; ?>
+    </ul>
+  </div>
+</div>
+<!-- template end: common/block-layout/browse-twinsets -->

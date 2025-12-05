@@ -3,39 +3,23 @@
 $translate = $this->plugin('translate');
 $escape = $this->plugin('escapeHtml');
 $thumbnail = $this->plugin('thumbnail');
-
-$filterLocale = (bool) $this->siteSetting('filter_locale_values');
-$lang = $this->lang();
-$valueLang = $filterLocale ? [$lang, ''] : null;
-
-$title = isset($title) ? $title : null;
-$description = isset($description) ? $description : null;
-$totalResults = (isset($totalResults) && $totalResults) ? $totalResults : count($resources);
-$page = isset($query['page']) ? $query['page'] : 1;
-$perPage = isset($query['per_page']) ? $query['per_page'] : $totalResults;
-$limit = isset($query['limit']) ? $query['limit'] : 12;
-$more = (($page * $perPage) >= $limit);
-$offsetStart = ($page - 1) * $perPage + 1;
-$offsetEnd = $page * $perPage;
-$offsetEnd = ($offsetEnd > $totalResults) ? $totalResults : $offsetEnd;
 ?>
 
 <div class="preview-block bulma-section px-0">
   <div class="bulma-container">
-    <ul class="resource-list preview cm-flk-block">
-      <?php if ($title || $description): ?>
-      <?php endif; ?>
+    <ul class="resource-list preview cm-flk-block" data-lightbox="<?php echo $lightBox ? 'true' : 'false' ?>">
       <?php foreach ($resources as $resource): ?>
       <li class="resource <?php echo $resource->resourceName(); ?> cm-flk-cell">
         <div class="cm-item-img">
           <?php
-          echo $thumbnail($resource, 'large');
+          $linkImg = $thumbnail($resource, 'large') ?: ('<img src="' . $this->assetUrl('img/media-generic.jpg') . '" alt="' . $resource->resourceName() . '">');
+          echo $lightBox ? "<a>$linkImg</a>" : $linkImg;
           ?>
         </div>
         <div class="cm-item-title cm-oneline">
           <?php
-          $linkContent = sprintf('<h3 class="resource-name">%s</h3>', $resource->displayTitle(null, $valueLang));
-          echo $resource->linkRaw($linkContent, null, ['class' => 'resource-link']);
+          $linkContent = sprintf('<h3 class="resource-name">%s</h3>', $resource->displayTitle());
+          echo $lightBox ? $linkContent : $resource->linkRaw($linkContent, null, ['class' => 'resource-link']);
           ?>
         </div>
       </li>

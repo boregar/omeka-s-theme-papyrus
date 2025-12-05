@@ -20,21 +20,29 @@ $searchValue = $this->escapeHtml($this->params()->fromQuery('fulltext_search', '
         <button id="cm-close-icon" class="bulma-delete bulma-is-medium" aria-label="fermer"></button>
       </div>
       <div class="bulma-message-body">
-
         <form action="<?php echo $this->escapeHtml($searchAction); ?>" id="search-form" class="bulma-panel-block is-flex-direction-column is-justify-content-center px-0">
-          <div class="bulma-control bulma-has-icons-left bulma-has-icons-right bulma-container bulma-is-max-tablet">
-            <input type="text" id="cm-fulltext" name="fulltext_search" size="30" maxlength="128" value="<?php echo $searchValue; ?>"
-                class="bulma-input bulma-is-medium"
-                placeholder="Chercher par mot-clé"
-                aria-label="Chercher par mot-clé">
-            <span class="bulma-icon bulma-is-left"><i class="fa-solid fa-search"></i></span>
-            <span class="bulma-icon bulma-is-right">
-              <button id="cm-reset-icon" class="bulma-delete"></button>
-            </span>
+          <div class="bulma-field bulma-has-addons bulma-container bulma-is-max-tablet">
+            <div class="bulma-control bulma-has-icons-left">
+              <input type="text" id="cm-fulltext" name="fulltext_search" size="30" maxlength="128" value="<?php echo $searchValue; ?>"
+                  class="bulma-input bulma-is-medium"
+                  placeholder="Chercher par mot-clé"
+                  aria-label="Chercher par mot-clé">
+              <span class="bulma-icon bulma-is-left"><i class="fa-solid fa-search"></i></span>
+            </div>
+            <div class="bulma-control">
+              <button type="submit" class="button bulma-button bulma-is-medium">Chercher</button>
+            </div>
           </div>
-          <button type="submit" class="button bulma-button bulma-is-medium mt-5">Envoyer</button>
+          <p></p>
         </form>
-
+        <div>
+          <a href="/item/search">
+            <div class="bulma-icon-text">
+              <span class="bulma-icon"><i class="fas fa-sliders"></i></span>
+              <span><?php echo $translate('Advanced search'); ?></span>
+            </div>
+          </a>
+        </div>
       </div>
     </div>
   </div>

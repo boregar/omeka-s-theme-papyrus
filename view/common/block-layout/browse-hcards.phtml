@@ -1,0 +1,43 @@
+<!-- template begin: common/block-layout/browse-hcards -->
+<?php
+$translate = $this->plugin('translate');
+$escape = $this->plugin('escapeHtml');
+$thumbnail = $this->plugin('thumbnail');
+?>
+
+<div class="preview-block bulma-section px-0">
+  <div class="bulma-container">
+    <ul class="resource-list linked-list preview cm-flk-block cm-hcards" data-freescroll="false">
+      <?php foreach ($resources as $resource): ?>
+      <?php
+      $resourceClassLabel = strtolower($resource->displayResourceClassLabel('undefined'));
+      if ($resourceClassLabel === 'event') {
+        $dateBegin = strlen($resource->value('rico:beginningDate')->value()) === 4 ? date_create($resource->value('rico:beginningDate')->value() . '-01-01') : date_create($resource->value('rico:beginningDate'));
+        $dateEnd = strlen($resource->value('rico:endDate')->value()) === 4 ? date_create($resource->value('rico:endDate')->value() . '-12-31') : date_create($resource->value('rico:endDate'));
+        $dateInterval = date_diff(date_create('now'), $dateEnd);
+      }
+      ?>
+      <li class="linked-resource cm-flk-cell resource-class-<?php echo $resourceClassLabel;?><? echo ($resourceClassLabel === 'event' ? ($dateInterval->invert > 0 ? ' cm-is-past' : ' cm-is-initial') : ''); ?>">
+        <div class="cm-item-media cm-is-rounded">
+          <?php
+          //echo $this->LinkPretty($resource, null, 'square');
+          $linkImg = $thumbnail($resource, 'square') ?: ('<img src="' . $this->assetUrl('img/media-generic.jpg') . '" alt="' . $resource->resourceName() . '">');
+          echo $resource->linkRaw($linkImg, null, ['class' => 'resource-link'])
+          ?>
+        </div>
+        <div class="cm-item-content">
+          <span class="resource-class"><?php echo $this->ResourceClassIcon($resource); ?></span>
+          <?php
+          $linkContent = sprintf('<h3 class="resource-name">%s</h3>', $resource->displayTitle());
+          echo $resource->linkRaw($linkContent, null, ['class' => 'resource-link']);
+          if ($resourceClassLabel === 'event') {
+            echo sprintf('<p>%s – %s</p>', date_format($dateBegin, 'j M Y'), date_format($dateEnd, 'j M Y'));
+          }
+          ?>
+        </div>
+      </li>
+      <?php endforeach; ?>
+    </ul>
+  </div>
+</div>
+<!-- template end: common/block-layout/browse-hcards -->
